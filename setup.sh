@@ -9,6 +9,7 @@ set -e
 
 REPO="https://github.com/Gerald-Illy/lore.git"
 TARGET="$HOME/.lore"
+CMDS="$HOME/.claude/commands/lore"
 
 # Step 1 — Clone or update Lore framework
 if [ -d "$TARGET/.git" ]; then
@@ -19,15 +20,14 @@ else
   git clone "$REPO" "$TARGET"
 fi
 
-# Step 2 — Install /lore plugin globally in Claude Code
+# Step 2 — Copy /lore commands into Claude Code's global commands directory
 echo ""
-echo "Installing /lore plugin in Claude Code..."
-if claude plugin install "$TARGET" --scope user 2>/dev/null; then
-  echo "✅ Plugin installed."
-else
-  echo "⚠ Automatic install failed. Install manually:"
-  echo "   claude plugin install $TARGET --scope user"
-fi
+echo "Installing /lore commands in Claude Code..."
+
+mkdir -p "$CMDS"
+cp "$TARGET/commands/"* "$CMDS/"
+
+echo "✅ Commands installed at $CMDS"
 
 echo ""
 echo "Done. Open Claude Code and run:"

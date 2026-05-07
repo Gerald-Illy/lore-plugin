@@ -83,49 +83,33 @@ test -d ~/.lore/$ALIAS/.claude/skills && echo "HAS_SKILLS" || echo "NO_SKILLS"
 
 The templates live at `~/.lore/templates/`.
 
-For each template file, read it, replace all placeholder tokens, and write the result to the target path.
+For each template file, read it, replace all placeholder tokens, and write the result directly to Claude Code's global commands directory for this alias.
 
 **Substitution tokens:**
 - `{ALIAS}` → the actual alias value (e.g. `myproject`)
 - `{REPO_URL}` → the full repo URL (e.g. `https://github.com/YourOrg/YourProject.git`)
 - `{REPO_PATH}` → `~/.lore/<ALIAS>` (with alias substituted, NOT expanded)
 
-**Create directories:**
+**Create directory:**
 ```bash
-mkdir -p ~/.lore/$ALIAS/.lore-plugin/.claude-plugin
-mkdir -p ~/.lore/$ALIAS/.lore-plugin/commands
+mkdir -p ~/.claude/commands/$ALIAS
 ```
 
 **File mapping — read from template, write to target:**
 
 | Template source | Target path |
 |----------------|-------------|
-| `~/.lore/templates/plugin.json.tpl` | `~/.lore/$ALIAS/.lore-plugin/.claude-plugin/plugin.json` |
-| `~/.lore/templates/briefing.md.tpl` | `~/.lore/$ALIAS/.lore-plugin/commands/briefing.md` |
-| `~/.lore/templates/ask.md.tpl` | `~/.lore/$ALIAS/.lore-plugin/commands/ask.md` |
-| `~/.lore/templates/escalate.md.tpl` | `~/.lore/$ALIAS/.lore-plugin/commands/escalate.md` |
-| `~/.lore/templates/overwrite.md.tpl` | `~/.lore/$ALIAS/.lore-plugin/commands/overwrite.md` |
-| `~/.lore/templates/help.md.tpl` | `~/.lore/$ALIAS/.lore-plugin/commands/help.md` |
+| `~/.lore/templates/briefing.md.tpl` | `~/.claude/commands/$ALIAS/briefing.md` |
+| `~/.lore/templates/ask.md.tpl` | `~/.claude/commands/$ALIAS/ask.md` |
+| `~/.lore/templates/escalate.md.tpl` | `~/.claude/commands/$ALIAS/escalate.md` |
+| `~/.lore/templates/overwrite.md.tpl` | `~/.claude/commands/$ALIAS/overwrite.md` |
+| `~/.lore/templates/help.md.tpl` | `~/.claude/commands/$ALIAS/help.md` |
 
 After writing each file, confirm: `echo "Written: <path>"`
 
 ---
 
-## Step 6 — Install the project plugin
-
-Run:
-```bash
-claude plugin install ~/.lore/$ALIAS/.lore-plugin --scope user
-```
-
-If this fails:
-- Show the manual install command:
-  `claude plugin install ~/.lore/$ALIAS/.lore-plugin --scope user`
-- Tell the user they can run it after this command completes.
-
----
-
-## Step 7 — Register the project in Lore config
+## Step 6 — Register the project in Lore config
 
 Read `~/.lore/config.json` (if it does not exist, start with `{}`).
 
@@ -146,7 +130,7 @@ Write back to `~/.lore/config.json`.
 
 ---
 
-## Step 8 — Confirm
+## Step 7 — Confirm
 
 Tell the user:
 

@@ -82,23 +82,22 @@ Read each template from `~/.lore/templates/`, substitute tokens, write to target
 - `{REPO_URL}` → repo URL from config
 - `{REPO_PATH}` → `~/.lore/<ALIAS>` (literal, not shell-expanded)
 
-**File mapping:**
+**File mapping — write directly to Claude Code's global commands directory:**
 
 | Template source | Target path |
 |----------------|-------------|
-| `~/.lore/templates/plugin.json.tpl` | `~/.lore/<ALIAS>/.lore-plugin/.claude-plugin/plugin.json` |
-| `~/.lore/templates/briefing.md.tpl` | `~/.lore/<ALIAS>/.lore-plugin/commands/briefing.md` |
-| `~/.lore/templates/ask.md.tpl` | `~/.lore/<ALIAS>/.lore-plugin/commands/ask.md` |
-| `~/.lore/templates/escalate.md.tpl` | `~/.lore/<ALIAS>/.lore-plugin/commands/escalate.md` |
-| `~/.lore/templates/overwrite.md.tpl` | `~/.lore/<ALIAS>/.lore-plugin/commands/overwrite.md` |
-| `~/.lore/templates/help.md.tpl` | `~/.lore/<ALIAS>/.lore-plugin/commands/help.md` |
+| `~/.lore/templates/briefing.md.tpl` | `~/.claude/commands/<ALIAS>/briefing.md` |
+| `~/.lore/templates/ask.md.tpl` | `~/.claude/commands/<ALIAS>/ask.md` |
+| `~/.lore/templates/escalate.md.tpl` | `~/.claude/commands/<ALIAS>/escalate.md` |
+| `~/.lore/templates/overwrite.md.tpl` | `~/.claude/commands/<ALIAS>/overwrite.md` |
+| `~/.lore/templates/help.md.tpl` | `~/.claude/commands/<ALIAS>/help.md` |
 
-After writing, reinstall the plugin:
+Create the directory first if needed:
 ```bash
-claude plugin install ~/.lore/<ALIAS>/.lore-plugin --scope user
+mkdir -p ~/.claude/commands/<ALIAS>
 ```
 
-If install fails: show the manual command and continue with the next alias.
+If writing fails: show the manual copy commands and continue with the next alias.
 
 ---
 

@@ -4,8 +4,9 @@
 # Clones the Lore framework to ~/.lore and installs the /lore plugin globally.
 # After setup, connect a project with: /lore:setup <repo-url> <alias>
 
-$repo = "https://github.com/Gerald-Illy/lore.git"
+$repo   = "https://github.com/Gerald-Illy/lore.git"
 $target = "$HOME\.lore"
+$cmds   = "$HOME\.claude\commands\lore"
 
 # Step 1 — Clone or update Lore framework
 if (Test-Path "$target\.git") {
@@ -16,16 +17,17 @@ if (Test-Path "$target\.git") {
     git clone $repo $target
 }
 
-# Step 2 — Install /lore plugin globally in Claude Code
+# Step 2 — Copy /lore commands into Claude Code's global commands directory
 Write-Host ""
-Write-Host "Installing /lore plugin in Claude Code..."
-try {
-    claude plugin install "$target" --scope user
-    Write-Host "✅ Plugin installed."
-} catch {
-    Write-Host "⚠ Automatic install failed. Install manually:"
-    Write-Host "   claude plugin install $target --scope user"
+Write-Host "Installing /lore commands in Claude Code..."
+
+if (-not (Test-Path $cmds)) {
+    New-Item -ItemType Directory -Path $cmds -Force | Out-Null
 }
+
+Copy-Item -Path "$target\commands\*" -Destination $cmds -Force
+
+Write-Host "✅ Commands installed at $cmds"
 
 Write-Host ""
 Write-Host "Done. Open Claude Code and run:"
