@@ -64,6 +64,8 @@ Commands available:
   /<alias>:help
 
 Connect a new project:  /lore:setup <repo-url> <alias>
+Update framework:       /lore:update [alias|--all]
+Lore help:              /lore
 Lore framework:         ~/.lore (version: <read from ~/.lore/.claude-plugin/plugin.json>)
 ```
 

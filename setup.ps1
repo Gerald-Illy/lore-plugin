@@ -20,11 +20,11 @@ if (Test-Path "$target\.git") {
 Write-Host ""
 Write-Host "Installing /lore plugin in Claude Code..."
 try {
-    claude plugin install "$target" --global
+    claude plugin install "$target" --scope user
     Write-Host "✅ Plugin installed."
 } catch {
     Write-Host "⚠ Automatic install failed. Install manually:"
-    Write-Host "   claude plugin install $target --global"
+    Write-Host "   claude plugin install $target --scope user"
 }
 
 Write-Host ""

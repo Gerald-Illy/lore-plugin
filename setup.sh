@@ -22,11 +22,11 @@ fi
 # Step 2 — Install /lore plugin globally in Claude Code
 echo ""
 echo "Installing /lore plugin in Claude Code..."
-if claude plugin install "$TARGET" --global 2>/dev/null; then
+if claude plugin install "$TARGET" --scope user 2>/dev/null; then
   echo "✅ Plugin installed."
 else
   echo "⚠ Automatic install failed. Install manually:"
-  echo "   claude plugin install $TARGET --global"
+  echo "   claude plugin install $TARGET --scope user"
 fi
 
 echo ""

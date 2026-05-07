@@ -115,12 +115,12 @@ After writing each file, confirm: `echo "Written: <path>"`
 
 Run:
 ```bash
-claude plugin install ~/.lore/$ALIAS/.lore-plugin --global
+claude plugin install ~/.lore/$ALIAS/.lore-plugin --scope user
 ```
 
 If this fails:
 - Show the manual install command:
-  `claude plugin install ~/.lore/$ALIAS/.lore-plugin --global`
+  `claude plugin install ~/.lore/$ALIAS/.lore-plugin --scope user`
 - Tell the user they can run it after this command completes.
 
 ---
