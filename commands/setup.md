@@ -58,10 +58,17 @@ else
 fi
 ```
 
-If this fails:
-- If the repo is private: tell the user to run `gh auth login` first, then retry `/lore:setup`.
-- If the URL looks wrong: show the URL that was attempted and ask the user to verify it.
-- **Stop here if clone failed.**
+If this fails, check the error output for clues:
+
+- **Access denied / 403 / "Repository not found" / "could not read Username":**
+  Tell the user:
+  > "You don't have access to `<REPO_URL>`.
+  > Please ask the repository owner to grant you read access, then retry `/lore:setup`."
+  **Stop here.**
+- **Not authenticated (private repo, no credentials):**
+  Tell the user to run `gh auth login` first, then retry `/lore:setup`. **Stop here.**
+- **URL looks wrong:** Show the URL that was attempted and ask the user to verify it. **Stop here.**
+- Any other error: Show the raw git error message so the user can diagnose it. **Stop here.**
 
 ---
 
