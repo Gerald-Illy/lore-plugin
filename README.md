@@ -1,6 +1,8 @@
-# Lore plugin for Claude Code
+# Lore — Claude Code Plugin
 
-Connect any project repo to Claude Code and query it with a project-specific command prefix.
+**Powered by Lore — agentic intelligence graph and delivery engine.**
+
+This is the Claude Code plugin for Lore. It connects any Lore-compatible project repo to your Claude Code session, giving you a living project memory you can query, brief from, and escalate through.
 
 ---
 
