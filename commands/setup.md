@@ -9,20 +9,21 @@ Examples:
 
 ---
 
-## Step 1 — Verify the Lore framework
+## Step 1 — Ensure the Lore framework is present
 
 Run:
 ```bash
-test -d ~/.lore/.git && echo "OK" || echo "MISSING"
+test -d ~/.lore/.plugin/.git && echo "OK" || echo "MISSING"
 ```
 
 If `MISSING`:
-- Tell the user: "Lore is not installed yet. Run the setup script first:"
+- Tell the user: "Cloning Lore framework to ~/.lore/.plugin/..."
+- Run:
+  ```bash
+  mkdir -p ~/.lore && git clone https://github.com/Gerald-Illy/lore.git ~/.lore/.plugin && echo "CLONED" || echo "CLONE_FAILED"
   ```
-  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
-  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
-  ```
-- **Stop here. Do not continue.**
+- If `CLONE_FAILED`: tell the user to check their connection or run `gh auth login` if the repo is private. **Stop here.**
+- If `CLONED`: continue.
 
 ---
 
@@ -42,7 +43,6 @@ Set:
 REPO_URL  = <parsed>
 ALIAS     = <parsed, lowercase>
 REPO_PATH = ~/.lore/<ALIAS>
-PLUGIN_PATH = ~/.lore/<ALIAS>/.lore-plugin
 ```
 
 ---
@@ -54,7 +54,6 @@ Run:
 if [ -d "$HOME/.lore/$ALIAS/.git" ]; then
   git -C ~/.lore/$ALIAS pull --quiet && echo "UPDATED"
 else
-  mkdir -p ~/.lore
   git clone $REPO_URL ~/.lore/$ALIAS && echo "CLONED"
 fi
 ```
@@ -81,7 +80,7 @@ test -d ~/.lore/$ALIAS/.claude/skills && echo "HAS_SKILLS" || echo "NO_SKILLS"
 
 ## Step 5 — Generate the project plugin from templates
 
-The templates live at `~/.lore/templates/`.
+The templates live at `~/.lore/.plugin/templates/`.
 
 For each template file, read it, replace all placeholder tokens, and write the result directly to Claude Code's global commands directory for this alias.
 
@@ -99,11 +98,11 @@ mkdir -p ~/.claude/commands/$ALIAS
 
 | Template source | Target path |
 |----------------|-------------|
-| `~/.lore/templates/briefing.md.tpl` | `~/.claude/commands/$ALIAS/briefing.md` |
-| `~/.lore/templates/ask.md.tpl` | `~/.claude/commands/$ALIAS/ask.md` |
-| `~/.lore/templates/escalate.md.tpl` | `~/.claude/commands/$ALIAS/escalate.md` |
-| `~/.lore/templates/overwrite.md.tpl` | `~/.claude/commands/$ALIAS/overwrite.md` |
-| `~/.lore/templates/help.md.tpl` | `~/.claude/commands/$ALIAS/help.md` |
+| `~/.lore/.plugin/templates/briefing.md.tpl` | `~/.claude/commands/$ALIAS/briefing.md` |
+| `~/.lore/.plugin/templates/ask.md.tpl` | `~/.claude/commands/$ALIAS/ask.md` |
+| `~/.lore/.plugin/templates/escalate.md.tpl` | `~/.claude/commands/$ALIAS/escalate.md` |
+| `~/.lore/.plugin/templates/overwrite.md.tpl` | `~/.claude/commands/$ALIAS/overwrite.md` |
+| `~/.lore/.plugin/templates/help.md.tpl` | `~/.claude/commands/$ALIAS/help.md` |
 
 After writing each file, confirm: `echo "Written: <path>"`
 
@@ -140,6 +139,9 @@ Tell the user:
    Repo:      <REPO_URL>
    Local:     ~/.lore/<ALIAS>
    Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite   /<ALIAS>:help
+
+To remove this project: /lore:uninstall <ALIAS>
+To remove everything:   /lore:uninstall --all
 
 Try it now: /<ALIAS>:briefing leads
 ```

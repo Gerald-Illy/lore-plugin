@@ -14,15 +14,11 @@ Format: (none) | `<alias>` | `--all`
 
 Run:
 ```bash
-test -d ~/.lore/.git && echo "OK" || echo "MISSING"
+test -d ~/.lore/.plugin/.git && echo "OK" || echo "MISSING"
 ```
 
 If `MISSING`:
-- Tell the user: "Lore is not installed. Run the setup script first:"
-  ```
-  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
-  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
-  ```
+- Tell the user: "Lore framework not found at ~/.lore/.plugin/. Run `/lore:setup` to connect a project — it will bootstrap the framework automatically."
 - **Stop here.**
 
 ---
@@ -31,11 +27,19 @@ If `MISSING`:
 
 Run:
 ```bash
-git -C ~/.lore pull --quiet && echo "FRAMEWORK_UPDATED" || echo "FRAMEWORK_ERROR"
+git -C ~/.lore/.plugin pull --quiet && echo "FRAMEWORK_UPDATED" || echo "FRAMEWORK_ERROR"
 ```
 
-- If `FRAMEWORK_UPDATED`: note "✅ Framework updated."
 - If `FRAMEWORK_ERROR`: warn "⚠ Could not pull framework from GitHub. Check your connection." Continue anyway (the rest can still run with what's on disk).
+
+After a successful pull, re-copy the framework commands to apply any changes:
+```bash
+mkdir -p ~/.claude/commands/lore
+cp ~/.lore/.plugin/commands/* ~/.claude/commands/lore/
+```
+
+- If `FRAMEWORK_UPDATED` and copy succeeded: note "✅ Framework updated."
+- If copy failed: warn "⚠ Framework pulled but commands could not be updated. Run the setup script manually."
 
 ---
 
@@ -75,7 +79,7 @@ For each alias in TARGETS (that is not SKIP):
 
 Read `config.json` to get `REPO_URL` and `REPO_PATH` for this alias.
 
-Read each template from `~/.lore/templates/`, substitute tokens, write to target:
+Read each template from `~/.lore/.plugin/templates/`, substitute tokens, write to target:
 
 **Substitution tokens:**
 - `{ALIAS}` → alias value
@@ -86,11 +90,11 @@ Read each template from `~/.lore/templates/`, substitute tokens, write to target
 
 | Template source | Target path |
 |----------------|-------------|
-| `~/.lore/templates/briefing.md.tpl` | `~/.claude/commands/<ALIAS>/briefing.md` |
-| `~/.lore/templates/ask.md.tpl` | `~/.claude/commands/<ALIAS>/ask.md` |
-| `~/.lore/templates/escalate.md.tpl` | `~/.claude/commands/<ALIAS>/escalate.md` |
-| `~/.lore/templates/overwrite.md.tpl` | `~/.claude/commands/<ALIAS>/overwrite.md` |
-| `~/.lore/templates/help.md.tpl` | `~/.claude/commands/<ALIAS>/help.md` |
+| `~/.lore/.plugin/templates/briefing.md.tpl` | `~/.claude/commands/<ALIAS>/briefing.md` |
+| `~/.lore/.plugin/templates/ask.md.tpl` | `~/.claude/commands/<ALIAS>/ask.md` |
+| `~/.lore/.plugin/templates/escalate.md.tpl` | `~/.claude/commands/<ALIAS>/escalate.md` |
+| `~/.lore/.plugin/templates/overwrite.md.tpl` | `~/.claude/commands/<ALIAS>/overwrite.md` |
+| `~/.lore/.plugin/templates/help.md.tpl` | `~/.claude/commands/<ALIAS>/help.md` |
 
 Create the directory first if needed:
 ```bash
@@ -113,7 +117,7 @@ LORE UPDATE COMPLETE
 
   Projects regenerated:
   ─────────────────────
-  myproject    ✅ Plugin regenerated and reinstalled
+  myproject    ✅ Plugin regenerated
   work         ⚠ Pull failed — skipped
 
 ══════════════════════════════════════════════════════════

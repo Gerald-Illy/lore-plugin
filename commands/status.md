@@ -7,15 +7,11 @@
 
 Run:
 ```bash
-test -d ~/.lore/.git && echo "OK" || echo "MISSING"
+test -d ~/.lore/.plugin/.git && echo "OK" || echo "MISSING"
 ```
 
 If `MISSING`:
-- Tell the user: "Lore is not installed. Run the setup script to get started:"
-  ```
-  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
-  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
-  ```
+- Tell the user: "Lore framework not found at ~/.lore/.plugin/. Run `/lore:setup` to connect a project — it will bootstrap the framework automatically."
 - **Stop here.**
 
 ---
@@ -65,8 +61,10 @@ Commands available:
 
 Connect a new project:  /lore:setup <repo-url> <alias>
 Update framework:       /lore:update [alias|--all]
+Uninstall project:      /lore:uninstall <alias>
+Uninstall everything:   /lore:uninstall --all
 Lore help:              /lore
-Lore framework:         ~/.lore (version: <read from ~/.lore/.claude-plugin/plugin.json>)
+Lore framework:         ~/.lore/.plugin (version: <read from ~/.lore/.plugin/.claude-plugin/plugin.json>)
 ```
 
 If a project shows `SYNC_ERROR`: note it in the table as `⚠ repo missing — run /lore:setup again`.

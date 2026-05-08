@@ -8,15 +8,15 @@ It is not a project instance. It is the framework that connects project instance
 ## What this repo does
 
 When installed (`setup.sh` / `setup.ps1`), it:
-1. Clones itself to `~/.lore/`
-2. Installs the `/lore` plugin globally in Claude Code
+1. Clones itself to `~/.lore/.plugin/`
+2. Copies the `/lore:*` commands to `~/.claude/commands/lore/`
 
 When a user runs `/lore:setup github:Org/Repo alias`, it:
-1. Clones the target project repo to `~/.lore/<alias>/`
-2. Reads template files from `~/.lore/templates/`
-3. Substitutes `{ALIAS}`, `{REPO_URL}`, `{REPO_PATH}` throughout
-4. Writes the generated plugin to `~/.lore/<alias>/.lore-plugin/`
-5. Installs it globally: Claude Code now has `/<alias>:briefing`, `/<alias>:ask`, etc.
+1. Self-bootstraps: clones this repo to `~/.lore/.plugin/` if not already present
+2. Clones the target project repo to `~/.lore/<alias>/`
+3. Reads template files from `~/.lore/.plugin/templates/`
+4. Substitutes `{ALIAS}`, `{REPO_URL}`, `{REPO_PATH}` throughout
+5. Writes generated commands directly to `~/.claude/commands/<alias>/`
 6. Registers the project in `~/.lore/config.json`
 
 ---
@@ -28,23 +28,40 @@ When a user runs `/lore:setup github:Org/Repo alias`, it:
   plugin.json           ← Plugin manifest. Prefix: "lore". Author: this repo's URL.
 
 commands/
+  lore.md               ← /lore — help
   setup.md              ← /lore:setup <repo-url> <alias>
-                           The core command — clones + generates + installs project plugin
   status.md             ← /lore:status
-                           Shows all connected projects from config.json
+  update.md             ← /lore:update [alias|--all]
+  uninstall.md          ← /lore:uninstall <alias>|--all
 
 templates/
-  plugin.json.tpl       ← Generated .claude-plugin/plugin.json for project plugin
   briefing.md.tpl       ← Generated commands/briefing.md
   ask.md.tpl            ← Generated commands/ask.md
   escalate.md.tpl       ← Generated commands/escalate.md
   overwrite.md.tpl      ← Generated commands/overwrite.md
   help.md.tpl           ← Generated commands/help.md
 
-setup.sh                ← Bootstrap: clone + claude plugin install (Mac/Linux)
-setup.ps1               ← Bootstrap: clone + claude plugin install (Windows)
+setup.sh                ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Mac/Linux)
+setup.ps1               ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Windows)
 README.md               ← User-facing documentation
 CLAUDE.md               ← This file — development context for Claude
+```
+
+### Runtime layout (on the user's machine)
+
+```
+~/.lore/
+  .plugin/              ← this repo, cloned by setup
+    commands/           ← source of /lore:* commands
+    templates/          ← source of project plugin templates
+  config.json           ← registry of connected projects
+  dta/                  ← example project instance
+  work/                 ← another project instance
+
+~/.claude/commands/
+  lore/                 ← installed /lore:* commands (copied from ~/.lore/.plugin/commands/)
+  dta/                  ← installed /dta:* commands (generated from templates)
+  work/                 ← installed /work:* commands
 ```
 
 ---
@@ -116,11 +133,13 @@ If a required file is missing, the command tells the user rather than failing si
 
 ## How to add a new command
 
-1. Add `<name>.md.tpl` to `templates/` following the 6-step pattern above
-2. Add the file to the mapping table in `commands/setup.md` (Step 5)
-3. Add the command to the display list in `commands/setup.md` (Step 8 confirm block)
-4. Add the command to the display in `templates/help.md.tpl`
-5. Add the command to `commands/status.md` (Commands available section)
+1. Add `<name>.md.tpl` to `templates/` following the 6-step pattern above (for project commands)
+   — or add `<name>.md` directly to `commands/` (for framework commands like `uninstall`)
+2. Add the file to the mapping table in `commands/setup.md` (Step 5) — project commands only
+3. Add the command to the confirm block in `commands/setup.md` (Step 7) — project commands only
+4. Add the command to the display in `templates/help.md.tpl` — project commands only
+5. Add the command to `commands/lore.md` (Framework commands section)
+6. Add the command to `commands/status.md` (Commands available section)
 
 The new command will be generated for all future `/lore:setup` calls.
 Existing connected projects need to be reconnected: `/lore:setup <repo-url> <alias>`

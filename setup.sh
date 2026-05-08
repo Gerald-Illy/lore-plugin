@@ -2,13 +2,13 @@
 # Lore — One-time setup
 # Agentic intelligence graph and delivery engine
 #
-# Clones the Lore framework to ~/.lore and installs the /lore plugin globally.
+# Clones the Lore framework to ~/.lore/.plugin/ and installs the /lore commands.
 # After setup, connect a project with: /lore:setup <repo-url> <alias>
 
 set -e
 
 REPO="https://github.com/Gerald-Illy/lore.git"
-TARGET="$HOME/.lore"
+TARGET="$HOME/.lore/.plugin"
 CMDS="$HOME/.claude/commands/lore"
 
 # Step 1 — Clone or update Lore framework
@@ -17,6 +17,7 @@ if [ -d "$TARGET/.git" ]; then
   git -C "$TARGET" pull
 else
   echo "Cloning Lore to $TARGET..."
+  mkdir -p "$HOME/.lore"
   git clone "$REPO" "$TARGET"
 fi
 

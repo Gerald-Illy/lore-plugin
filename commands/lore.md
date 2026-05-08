@@ -13,10 +13,12 @@ LORE — Agentic intelligence graph and delivery engine
   project memory you can query, brief from, and escalate through.
 
 FRAMEWORK COMMANDS
-  /lore:setup <repo-url> <alias>   Connect a project repo
-  /lore:status                     Show all connected projects
-  /lore:update [alias|--all]       Update framework and/or project plugins
-  /lore                            Show this help
+  /lore:setup <repo-url> <alias>        Connect a project repo
+  /lore:status                          Show all connected projects
+  /lore:update [alias|--all]            Update framework and/or project plugins
+  /lore:uninstall <alias>               Remove a connected project
+  /lore:uninstall --all                 Full uninstall (projects + framework)
+  /lore                                 Show this help
 
 SETUP EXAMPLES
   /lore:setup github:YourOrg/YourProject myproject
@@ -33,7 +35,7 @@ INSTALLATION
   Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
   Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
 
-Framework: ~/.lore
+Framework: ~/.lore/.plugin
 ══════════════════════════════════════════════════════════
 ```
 
