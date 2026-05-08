@@ -4,25 +4,34 @@ Connect any project repo to Claude Code and query it with a project-specific com
 
 ---
 
+## Prerequisites
+
+| Tool | Purpose | Required? |
+|------|---------|-----------|
+| `git` | Clone and sync repos | Yes |
+| `gh` | GitHub access for private repos | Only if connecting a private repo |
+
+---
+
 ## Install
 
-**Via Claude plugin marketplace:**
+**Simplest — paste this into Claude Code:**
 ```
-claude plugin marketplace add Gerald-Illy/lore-plugin
-claude plugin install lore
+install github.com/Gerald-Illy/lore-plugin
 ```
+Claude reads the README and runs the setup automatically.
 
-**Mac/Linux:**
+**Or run directly:**
+
+Mac/Linux:
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.sh)
 ```
 
-**Windows (PowerShell):**
+Windows (PowerShell):
 ```powershell
 irm https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.ps1 | iex
 ```
-
-The marketplace install copies the `/lore:*` commands into Claude Code. The setup scripts do the same and also clone the plugin to `~/.lore/.plugin/` upfront — either way, the first `/lore:setup` call completes the bootstrapping automatically.
 
 ---
 
@@ -56,7 +65,7 @@ This clones the project repo to `~/.lore/myproject/` and installs `/myproject:*`
 | `/lore` | Show help |
 | `/lore:setup <repo-url> <alias>` | Connect a project repo |
 | `/lore:status` | Show all connected projects |
-| `/lore:update [alias\|--all]` | Pull latest plugin + regenerate project commands (use this instead of `claude plugin update lore` — it also syncs `~/.lore/.plugin/` and project commands) |
+| `/lore:update [alias\|--all]` | Pull latest plugin + regenerate project commands |
 | `/lore:uninstall <alias>` | Remove a connected project |
 | `/lore:uninstall --all` | Full uninstall (all projects + plugin) |
 
@@ -101,13 +110,6 @@ At minimum, a connected repo needs:
 Without these, the plugin installs but skill commands will tell you what's missing.
 
 ---
-
-## Prerequisites
-
-| Tool | Purpose | Required? |
-|------|---------|-----------|
-| `git` | Clone and sync repos | Yes |
-| `gh` | GitHub access for private repos | Only if repo is private |
 
 ---
 
