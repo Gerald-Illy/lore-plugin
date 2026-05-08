@@ -8,18 +8,18 @@ Connect any project repo to Claude Code and query it with a project-specific com
 
 **Via Claude plugin marketplace:**
 ```
-claude plugin marketplace add Gerald-Illy/lore
+claude plugin marketplace add Gerald-Illy/lore-plugin
 claude plugin install lore
 ```
 
 **Mac/Linux:**
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
+bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.sh)
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
+irm https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.ps1 | iex
 ```
 
 The marketplace install copies the `/lore:*` commands into Claude Code. The setup scripts do the same and also clone the plugin to `~/.lore/.plugin/` upfront — either way, the first `/lore:setup` call completes the bootstrapping automatically.

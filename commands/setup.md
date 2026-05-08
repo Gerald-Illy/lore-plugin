@@ -20,7 +20,7 @@ If `MISSING`:
 - Tell the user: "Cloning Lore framework to ~/.lore/.plugin/..."
 - Run:
   ```bash
-  mkdir -p ~/.lore && git clone https://github.com/Gerald-Illy/lore.git ~/.lore/.plugin && echo "CLONED" || echo "CLONE_FAILED"
+  mkdir -p ~/.lore && git clone https://github.com/Gerald-Illy/lore-plugin.git ~/.lore/.plugin && echo "CLONED" || echo "CLONE_FAILED"
   ```
 - If `CLONE_FAILED`: tell the user to check their connection or run `gh auth login` if the repo is private. **Stop here.**
 - If `CLONED`: continue.

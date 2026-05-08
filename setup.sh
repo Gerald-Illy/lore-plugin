@@ -7,7 +7,7 @@
 
 set -e
 
-REPO="https://github.com/Gerald-Illy/lore.git"
+REPO="https://github.com/Gerald-Illy/lore-plugin.git"
 TARGET="$HOME/.lore/.plugin"
 CMDS="$HOME/.claude/commands/lore"
 

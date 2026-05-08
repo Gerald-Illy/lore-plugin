@@ -128,8 +128,8 @@ Tell the user:
    Removed:            ~/.lore/
 
 To reinstall:
-  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
-  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
+  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.sh)
+  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.ps1 | iex
 ```
 
 Note: the /lore:* commands are still registered in Claude Code's session memory until restart.

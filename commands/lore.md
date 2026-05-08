@@ -32,8 +32,8 @@ ONCE A PROJECT IS CONNECTED
   /<alias>:help                         Show commands for that project
 
 INSTALLATION
-  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
-  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
+  Mac/Linux:  bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.sh)
+  Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.ps1 | iex
 
 Framework: ~/.lore/.plugin
 ══════════════════════════════════════════════════════════

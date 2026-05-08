@@ -4,7 +4,7 @@
 # Clones the Lore framework to ~/.lore/.plugin/ and installs the /lore commands.
 # After setup, connect a project with: /lore:setup <repo-url> <alias>
 
-$repo   = "https://github.com/Gerald-Illy/lore.git"
+$repo   = "https://github.com/Gerald-Illy/lore-plugin.git"
 $target = "$HOME\.lore\.plugin"
 $cmds   = "$HOME\.claude\commands\lore"
 
