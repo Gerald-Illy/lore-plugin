@@ -6,6 +6,12 @@ Connect any project repo to Claude Code and query it with a project-specific com
 
 ## Install
 
+**Via Claude plugin marketplace:**
+```
+claude plugin marketplace add Gerald-Illy/lore
+claude plugin install lore
+```
+
 **Mac/Linux:**
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.sh)
@@ -16,7 +22,7 @@ bash <(curl -s https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.s
 irm https://raw.githubusercontent.com/Gerald-Illy/lore/master/setup.ps1 | iex
 ```
 
-This clones the Lore plugin to `~/.lore/.plugin/` and installs the `/lore:*` commands in Claude Code.
+The marketplace install copies the `/lore:*` commands into Claude Code. The setup scripts do the same and also clone the plugin to `~/.lore/.plugin/` upfront — either way, the first `/lore:setup` call completes the bootstrapping automatically.
 
 ---
 
@@ -50,7 +56,7 @@ This clones the project repo to `~/.lore/myproject/` and installs `/myproject:*`
 | `/lore` | Show help |
 | `/lore:setup <repo-url> <alias>` | Connect a project repo |
 | `/lore:status` | Show all connected projects |
-| `/lore:update [alias\|--all]` | Pull latest plugin + regenerate project commands |
+| `/lore:update [alias\|--all]` | Pull latest plugin + regenerate project commands (use this instead of `claude plugin update lore` — it also syncs `~/.lore/.plugin/` and project commands) |
 | `/lore:uninstall <alias>` | Remove a connected project |
 | `/lore:uninstall --all` | Full uninstall (all projects + plugin) |
 

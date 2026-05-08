@@ -9,16 +9,19 @@ Format: `<alias>` | `--all`
 
 ---
 
-## Step 1 — Verify framework
+## Step 1 — Verify there is something to uninstall
 
 Run:
 ```bash
-test -d ~/.lore/.plugin/.git && echo "OK" || echo "MISSING"
+test -d ~/.lore/.plugin/.git && echo "PLUGIN_OK" || echo "PLUGIN_MISSING"
+test -d ~/.claude/commands/lore && echo "COMMANDS_OK" || echo "COMMANDS_MISSING"
 ```
 
-If `MISSING`:
-- Tell the user: "Lore framework not found at ~/.lore/.plugin/ — nothing to uninstall."
+If both return `MISSING`:
+- Tell the user: "Lore does not appear to be installed — nothing to uninstall."
 - **Stop here.**
+
+If only `PLUGIN_MISSING` (marketplace install without `/lore:setup`): continue — commands still need to be removed.
 
 ---
 

@@ -2,7 +2,7 @@
   "name": "lore",
   "version": "1.0.0",
   "description": "Lore — agentic intelligence graph and delivery engine. Connect any Lore-compatible project repo and query its living project memory from any Claude Code session. Start with /lore:setup.",
-  "author": "https://github.com/Gerald-Illy/lore",
+  "author": "Gerald-Illy",
   "commands": {
     "prefix": "lore"
   }
