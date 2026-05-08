@@ -4,6 +4,8 @@
 # Clones the Lore framework to ~/.lore/.plugin/ and installs the /lore commands.
 # After setup, connect a project with: /lore:setup <repo-url> <alias>
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 $repo   = "https://github.com/Gerald-Illy/lore-plugin.git"
 $target = "$HOME\.lore\.plugin"
 $cmds   = "$HOME\.claude\commands\lore"
@@ -29,9 +31,24 @@ if (-not (Test-Path $cmds)) {
 Copy-Item -Path "$target\commands\*" -Destination $cmds -Force
 Write-Host "✅ Commands installed at $cmds"
 
-Write-Host ""
-Write-Host "Done. Open Claude Code and run:"
-Write-Host "  /lore:setup github:<Owner>/<Repo> <alias>"
-Write-Host ""
-Write-Host "Example:"
-Write-Host "  /lore:setup github:YourOrg/YourProject myproject"
+Write-Host @'
+
+  ██╗      ██████╗ ██████╗ ███████╗
+  ██║     ██╔═══██╗██╔══██╗██╔════╝
+  ██║     ██║   ██║██████╔╝█████╗
+  ██║     ██║   ██║██╔══██╗██╔══╝
+  ███████╗╚██████╔╝██║  ██║███████╗
+  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+  Agentic intelligence graph & delivery engine
+  ══════════════════════════════════════════════
+
+  ✅  Plugin    →  ~/.lore/.plugin/
+  ✅  Commands  →  ~/.claude/commands/lore/
+
+  Open Claude Code and run:
+    /lore:setup github:YourOrg/YourProject <alias>
+
+  /lore for help
+
+'@

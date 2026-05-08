@@ -30,9 +30,24 @@ cp "$TARGET/commands/"* "$CMDS/"
 
 echo "✅ Commands installed at $CMDS"
 
-echo ""
-echo "Done. Open Claude Code and run:"
-echo "  /lore:setup github:<Owner>/<Repo> <alias>"
-echo ""
-echo "Example:"
-echo "  /lore:setup github:YourOrg/YourProject myproject"
+cat << 'BANNER'
+
+  ██╗      ██████╗ ██████╗ ███████╗
+  ██║     ██╔═══██╗██╔══██╗██╔════╝
+  ██║     ██║   ██║██████╔╝█████╗
+  ██║     ██║   ██║██╔══██╗██╔══╝
+  ███████╗╚██████╔╝██║  ██║███████╗
+  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+  Agentic intelligence graph & delivery engine
+  ══════════════════════════════════════════════
+
+  ✅  Plugin    →  ~/.lore/.plugin/
+  ✅  Commands  →  ~/.claude/commands/lore/
+
+  Open Claude Code and run:
+    /lore:setup github:YourOrg/YourProject <alias>
+
+  /lore for help
+
+BANNER
