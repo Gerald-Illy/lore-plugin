@@ -80,31 +80,20 @@ test -d ~/.lore/$ALIAS/.claude/skills && echo "HAS_SKILLS" || echo "NO_SKILLS"
 
 ## Step 5 — Generate the project plugin from templates
 
-The templates live at `~/.lore/.plugin/templates/`.
-
-For each template file, read it, replace all placeholder tokens, and write the result directly to Claude Code's global commands directory for this alias.
-
-**Substitution tokens:**
-- `{ALIAS}` → the actual alias value (e.g. `myproject`)
-- `{REPO_URL}` → the full repo URL (e.g. `https://github.com/YourOrg/YourProject.git`)
-- `{REPO_PATH}` → `~/.lore/<ALIAS>` (with alias substituted, NOT expanded)
-
-**Create directory:**
+Run:
 ```bash
 mkdir -p ~/.claude/commands/$ALIAS
+for f in ~/.lore/.plugin/templates/*.md.tpl; do
+  name=$(basename "$f" .md.tpl)
+  sed -e "s|{ALIAS}|$ALIAS|g" \
+      -e "s|{REPO_URL}|$REPO_URL|g" \
+      -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
+      "$f" > ~/.claude/commands/$ALIAS/${name}.md
+  echo "Written: ~/.claude/commands/$ALIAS/${name}.md"
+done
 ```
 
-**File mapping — read from template, write to target:**
-
-| Template source | Target path |
-|----------------|-------------|
-| `~/.lore/.plugin/templates/briefing.md.tpl` | `~/.claude/commands/$ALIAS/briefing.md` |
-| `~/.lore/.plugin/templates/ask.md.tpl` | `~/.claude/commands/$ALIAS/ask.md` |
-| `~/.lore/.plugin/templates/escalate.md.tpl` | `~/.claude/commands/$ALIAS/escalate.md` |
-| `~/.lore/.plugin/templates/overwrite.md.tpl` | `~/.claude/commands/$ALIAS/overwrite.md` |
-| `~/.lore/.plugin/templates/help.md.tpl` | `~/.claude/commands/$ALIAS/help.md` |
-
-After writing each file, confirm: `echo "Written: <path>"`
+If the loop fails (e.g. templates directory missing): tell the user to run `/lore:update` to restore the plugin, then retry.
 
 ---
 

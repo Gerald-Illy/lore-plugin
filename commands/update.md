@@ -77,31 +77,21 @@ git -C ~/.lore/<ALIAS> pull --quiet && echo "PULLED" || echo "PULL_ERROR"
 
 For each alias in TARGETS (that is not SKIP):
 
-Read `config.json` to get `REPO_URL` and `REPO_PATH` for this alias.
+Read `config.json` to get `REPO_URL` for this alias. Then run:
 
-Read each template from `~/.lore/.plugin/templates/`, substitute tokens, write to target:
-
-**Substitution tokens:**
-- `{ALIAS}` → alias value
-- `{REPO_URL}` → repo URL from config
-- `{REPO_PATH}` → `~/.lore/<ALIAS>` (literal, not shell-expanded)
-
-**File mapping — write directly to Claude Code's global commands directory:**
-
-| Template source | Target path |
-|----------------|-------------|
-| `~/.lore/.plugin/templates/briefing.md.tpl` | `~/.claude/commands/<ALIAS>/briefing.md` |
-| `~/.lore/.plugin/templates/ask.md.tpl` | `~/.claude/commands/<ALIAS>/ask.md` |
-| `~/.lore/.plugin/templates/escalate.md.tpl` | `~/.claude/commands/<ALIAS>/escalate.md` |
-| `~/.lore/.plugin/templates/overwrite.md.tpl` | `~/.claude/commands/<ALIAS>/overwrite.md` |
-| `~/.lore/.plugin/templates/help.md.tpl` | `~/.claude/commands/<ALIAS>/help.md` |
-
-Create the directory first if needed:
 ```bash
 mkdir -p ~/.claude/commands/<ALIAS>
+for f in ~/.lore/.plugin/templates/*.md.tpl; do
+  name=$(basename "$f" .md.tpl)
+  sed -e "s|{ALIAS}|<ALIAS>|g" \
+      -e "s|{REPO_URL}|<REPO_URL>|g" \
+      -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
+      "$f" > ~/.claude/commands/<ALIAS>/${name}.md
+done
+echo "Plugin regenerated: <ALIAS>"
 ```
 
-If writing fails: show the manual copy commands and continue with the next alias.
+If the loop fails: show the error and continue with the next alias.
 
 ---
 
