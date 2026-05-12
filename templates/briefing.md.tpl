@@ -14,6 +14,23 @@ If the output contains `REPO_MISSING`:
 - Tell the user: "The Lore repo for `{ALIAS}` is not found locally. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`"
 - **Stop here. Do not continue.**
 
+## Step 1.5 — Check for plugin updates
+
+Run:
+```bash
+git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+```
+
+If `PLUGIN_UPDATE_AVAILABLE`:
+- Show this notification once (before any other output):
+  ```
+  ℹ Lore plugin update available. Run: /lore:update --all
+  ```
+- **Continue with Step 2.** Do not block execution.
+
 ## Step 2 — Load identity
 
 Read `{REPO_PATH}/CLAUDE.md` and internalize it fully.
@@ -67,8 +84,8 @@ Pass `$ARGUMENTS` as the audience parameter. If no argument was provided, defaul
 After the briefing, suggest 2–3 contextual follow-up actions based on what surfaced.
 
 - Risks surfaced → "Escalate one? `/{ALIAS}:escalate [risk]`"
-- Decisions pending → "Dig deeper? `/{ALIAS}:ask \"What's blocking [decision]?\"`"
-- Thin data on a workstream → "Check it? `/{ALIAS}:ask \"Status of [workstream]?\"`"
+- Decisions pending → "Dig deeper? `/{ALIAS}:ask "What's blocking [decision]?"`"
+- Thin data on a workstream → "Check it? `/{ALIAS}:ask "Status of [workstream]?"`"
 - All clear → "Prep next level up: `/{ALIAS}:briefing vp`"
 
 Phrase as copy-pasteable commands. Max 3. Pick what's most actionable.

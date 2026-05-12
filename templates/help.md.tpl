@@ -12,6 +12,23 @@ If the output contains `REPO_MISSING`:
 - Tell the user: "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`"
 - **Stop here. Do not continue.**
 
+## Step 1.5 — Check for plugin updates
+
+Run:
+```bash
+git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+```
+
+If `PLUGIN_UPDATE_AVAILABLE`:
+- Show this notification once (before any other output):
+  ```
+  ℹ Lore plugin update available. Run: /lore:update --all
+  ```
+- **Continue with Step 2.** Do not block execution.
+
 ## Step 2 — Show the help
 
 Read `{REPO_PATH}/CLAUDE.md` to understand the full command set available in this Lore instance.
@@ -85,6 +102,7 @@ PREREQUISITES — Optional, but unlocks full power
   │        "email": "you@yourcompany.com",                      │
   │        "apiToken": "<your-atlassian-api-token>"             │
   │      }                                                      │
+  │                                                             │
   └─────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────┐

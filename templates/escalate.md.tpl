@@ -14,6 +14,23 @@ If the output contains `REPO_MISSING`:
 - Tell the user: "The Lore repo for `{ALIAS}` is not found locally. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`"
 - **Stop here. Do not continue.**
 
+## Step 1.5 — Check for plugin updates
+
+Run:
+```bash
+git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+```
+
+If `PLUGIN_UPDATE_AVAILABLE`:
+- Show this notification once (before any other output):
+  ```
+  ℹ Lore plugin update available. Run: /lore:update --all
+  ```
+- **Continue with Step 2.** Do not block execution.
+
 ## Step 2 — Load identity
 
 Read `{REPO_PATH}/CLAUDE.md` and internalize it fully.
@@ -68,10 +85,10 @@ If no argument was provided: ask the user what needs to be escalated (Jira ID or
 
 After the escalation draft, suggest 1–3 contextual follow-up actions.
 
-- Related blocker exists → "Bundle it? `/{ALIAS}:escalate \"[related item]\"`"
-- Context is unclear → "Understand the history first? `/{ALIAS}:ask \"What's the history of [item]?\"`"
-- Escalation touches a risk → "Check the trend? `/{ALIAS}:ask \"What's the trend on [risk]?\"`"
+- Related blocker exists → "Bundle it? `/{ALIAS}:escalate "[related item]"`"
+- Context is unclear → "Understand the history first? `/{ALIAS}:ask "What's the history of [item]?"`"
+- Escalation touches a risk → "Check the trend? `/{ALIAS}:ask "What's the trend on [risk]?"`"
 - Leadership should be briefed after resolution → "Plan the follow-up: `/{ALIAS}:briefing vp`"
-- Wrong info at the source → "Correct it: `/{ALIAS}:overwrite \"[wrong]\" \"[correct]\"`"
+- Wrong info at the source → "Correct it: `/{ALIAS}:overwrite "[wrong]" "[correct]"`"
 
 Max 3. Pick what's most actionable given the situation.
