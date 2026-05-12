@@ -30,12 +30,11 @@ From this point on, ALL relative paths resolve against `{REPO_PATH}`.
 **Load governance rules** — read each file and internalize:
 - `{REPO_PATH}/.claude/rules/never-invent.md`
 - `{REPO_PATH}/.claude/rules/privacy.md`
-- `{REPO_PATH}/.claude/rules/tagging.md`
-- `{REPO_PATH}/.claude/rules/ai-inference.md`
+- `{REPO_PATH}/.claude/refs/tagging.md`
+- `{REPO_PATH}/.claude/refs/ai-inference.md`
 
-**Load corrections and learnings:**
+**Load corrections:**
 - `{REPO_PATH}/OVERRIDES.md`
-- `{REPO_PATH}/.lore/agent-learning.md`
 
 If any file does not exist, skip it silently and continue.
 

@@ -93,8 +93,9 @@ Step 2 — Identity   Read {REPO_PATH}/CLAUDE.md
                     Claude takes on the role defined there for this session.
 
 Step 2.5 — Context  cd {REPO_PATH}  ← critical: all relative paths resolve here
-                    Read 4 rules: never-invent, privacy, tagging, ai-inference
-                    Read OVERRIDES.md and .lore/agent-learning.md
+                    Read rules: never-invent, privacy (from rules/)
+                    Read refs: tagging, ai-inference (from refs/)
+                    Read OVERRIDES.md
                     Skip any file that does not exist.
 
 Step 3 — Skill      Check {REPO_PATH}/.claude/skills/<name>/SKILL.md exists.
@@ -117,15 +118,14 @@ resolve against the user's current project — not the Lore repo. This breaks ev
 ## What Lore-compatible projects must have
 
 | Path | Required | Purpose |
-|------|----------|---------|
+|------|----------|--------|
 | `CLAUDE.md` | Yes | Defines Claude's role, rules, and command set for this project |
 | `.claude/skills/<name>/SKILL.md` | Yes (per command) | Actual skill logic |
-| `.claude/rules/never-invent.md` | Recommended | Core integrity rule |
+| `.claude/rules/never-invent.md` | Recommended | Core integrity rule + priority hierarchy |
 | `.claude/rules/privacy.md` | Recommended | Privacy boundaries |
-| `.claude/rules/tagging.md` | Recommended | Tag system |
-| `.claude/rules/ai-inference.md` | Recommended | AI inference labeling |
+| `.claude/refs/tagging.md` | Recommended | Tag system (audience + content tags) |
+| `.claude/refs/ai-inference.md` | Recommended | AI inference labeling |
 | `OVERRIDES.md` | Optional | Human corrections — always win over source data |
-| `.lore/agent-learning.md` | Optional | What Claude got wrong before |
 
 If a required file is missing, the command tells the user rather than failing silently.
 
@@ -252,35 +252,45 @@ project-root/
 ├── OVERRIDES.md                 ← Human corrections — always win over source data
 ├── CHANGELOG.md                 ← Auto-logged after every session with file changes
 ├── .claude/
-│   ├── lore-design.md           ← Full design reference (this section is a summary of it)
+│   ├── lore-design.md           ← Core design principles (signal, pointer, philosophy, tags)
 │   ├── agents/                  ← Pull agents per source (confluence, jira, journal, sharepoint…)
-│   ├── rules/
-│   │   ├── never-invent.md      ← Core integrity rule + consistency check spec
+│   ├── rules/                   ← Always auto-loaded (every session)
+│   │   ├── never-invent.md      ← Core integrity rule + priority hierarchy
+│   │   ├── auto-log.md          ← CHANGELOG entry required after every session
+│   │   └── privacy.md           ← Public / Confidential / Private section convention
+│   ├── refs/                    ← Loaded on demand by skills/agents that need them
 │   │   ├── tagging.md           ← Audience + content tag system
 │   │   ├── condensing.md        ← Log lifecycle (daily → weekly → monthly → yearly)
 │   │   ├── log-writing.md       ← How daily logs are written
-│   │   ├── auto-log.md          ← CHANGELOG entry required after every session
-│   │   └── privacy.md           ← Public / Confidential / Private section convention
+│   │   ├── log-links.md         ← Clickable source references in all logs
+│   │   ├── ai-inference.md      ← AI-inferred hypotheses: labeling, lifecycle, quality bar
+│   │   ├── extraction-quality.md ← Pull extraction: inclusion checklists, thoroughness
+│   │   ├── consistency-check.md ← Consistency check spec (what gets checked, resolution)
+│   │   └── lore-reference.md    ← Repo structure, workflows, dependency map, setup checklist
 │   ├── skills/
-│   │   ├── briefing/SKILL.md    ← /briefing exec|vp|leads
+│   │   ├── briefing/SKILL.md    ← /briefing shared base (routing + rules)
+│   │   ├── briefing/exec.md     ← Executive variant template
+│   │   ├── briefing/vp.md       ← VP variant template
+│   │   ├── briefing/leads.md    ← Delivery lead variant template
 │   │   ├── ask/SKILL.md         ← Three-layer search: knowledge → logs → sources
 │   │   ├── escalate/SKILL.md    ← Draft escalation to responsible owner
 │   │   ├── override/SKILL.md    ← Correct wrong information
-│   │   ├── pull/SKILL.md        ← Pull fresh data from sources
+│   │   ├── pull/SKILL.md        ← Pull fresh data from sources (orchestrator)
 │   │   ├── inconsistencies/SKILL.md
 │   │   ├── plan/SKILL.md
 │   │   ├── log-changes/SKILL.md
 │   │   ├── setup/SKILL.md
 │   │   ├── atlassian/SKILL.md   ← Query Jira/Confluence via acli-pii CLI
 │   │   ├── juno-catalog/SKILL.md ← Query Backstage catalog via junoctl
+│   │   ├── publish-confluence/SKILL.md
 │   │   └── retroactive/SKILL.md
 │   └── skills-todo/             ← Stubs not yet implemented
 ├── .lore/
 │   ├── config.md                ← Per-source navigation, key pages, priorities
 │   ├── pending.md               ← Items not yet read
-│   ├── agent-learning.md        ← What Claude got wrong — read every session
 │   ├── inconsistencies.md       ← Open contradictions, updated after every pull
 │   ├── setup-log.md             ← Setup agent session memory
+│   ├── backlog.md               ← Missing capabilities and open problems
 │   └── manifests/               ← Last-known source state for delta detection
 │       ├── jira.json
 │       ├── confluence.json
@@ -334,7 +344,7 @@ was made or someone is working against an established direction.
 **Content tags**
 
 | Tag | What | Follow-up |
-|-----|------|-----------|
+|-----|------|----------|
 | `[decision]` | Decision made | Create context chunk in log/context/ |
 | `[risk]` | Identified risk | Context chunk + trend tag (`[↑]` `[→]` `[↓]`) |
 | `[action]` | Task with owner + date | — |
@@ -344,11 +354,13 @@ was made or someone is working against an established direction.
 
 ### Consistency check
 
+Full spec: `.claude/refs/consistency-check.md`
+
 Runs automatically after every `/pull` and every `/briefing`.
 Results written to `.lore/inconsistencies.md`. Never auto-resolved — always surfaced to the human.
 
 | Criticality | Meaning |
-|-------------|---------|
+|-------------|--------|
 | 🔴 Knowledge conflict | Contradicts knowledge/ — shown first, always |
 | 🟡 Source conflict | Two sources disagree |
 | 🟢 Missing data | Owner, deadline, or link missing |
@@ -375,12 +387,14 @@ GitHub      Standard GitHub URLs to commits, files, PRs
 
 ### Dependency map (when changing a Lore instance)
 
+Full dependency map: `.claude/refs/lore-reference.md`
+
 | Changed file | Must also update |
 |---|---|
-| New skill in `.claude/skills/` | `CLAUDE.md` skill table, `lore-design.md`, `CHANGELOG.md` |
+| New skill in `.claude/skills/` | `CLAUDE.md` skill table, `refs/lore-reference.md`, `CHANGELOG.md` |
 | New rule in `.claude/rules/` | `CHANGELOG.md` |
-| New agent in `.claude/agents/` | `CLAUDE.md` agents table, `lore-design.md`, `CHANGELOG.md` |
-| `log-writing.md` changed | `skills/pull/SKILL.md` Phase 3 (log format must stay in sync) |
-| Tag system changed | `log-writing.md`, `never-invent.md`, `skills/pull/SKILL.md` |
+| New agent in `.claude/agents/` | `CLAUDE.md` agents table, `refs/lore-reference.md`, `CHANGELOG.md` |
+| `log-writing.md` changed | `skills/pull/SKILL.md` (log format must stay in sync) |
+| Tag system changed | `log-writing.md`, `lore-design.md`, `skills/pull/SKILL.md` |
 | `knowledge/INDEX.md` | Must reflect all files in `knowledge/` |
 | Any file created/modified/deleted | `CHANGELOG.md` — no exceptions |
