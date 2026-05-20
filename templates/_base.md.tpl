@@ -72,3 +72,18 @@ From this point on, ALL relative paths resolve against `{REPO_PATH}`.
 - `{REPO_PATH}/OVERRIDES.md`
 
 If any file does not exist, skip it silently and continue.
+
+## Available plugin commands
+
+Only the following commands are installed as global plugin commands:
+
+- `/{ALIAS}:briefing` `/{ALIAS}:ask` `/{ALIAS}:escalate` `/{ALIAS}:overwrite`
+- `/{ALIAS}:todo` `/{ALIAS}:note` `/{ALIAS}:recap` `/{ALIAS}:feedback`
+- `/{ALIAS}:help`
+
+**Rule:** When suggesting follow-up commands (Step 5), ONLY suggest commands from this list.
+If the skill's SKILL.md or the project's CLAUDE.md references other commands (e.g. `/pull`, `/inconsistencies`, `/plan`), these are **repo-only commands** — they are not available as plugin commands. Either:
+- Skip them entirely, OR
+- Frame them as: "For deeper operations, work inside the repo directly: `cd ~/.lore/{ALIAS}` then use `/<command>`"
+
+Never suggest a command that doesn't exist as an installed plugin command.
