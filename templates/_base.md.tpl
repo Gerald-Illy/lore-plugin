@@ -48,6 +48,8 @@ Handle the output:
 Read `{REPO_PATH}/CLAUDE.md` and internalize it fully.
 All rules and behavioral guidelines defined there apply for this session.
 
+**Skip any update/version check** defined in the project's CLAUDE.md — Step 1.5 already handles this.
+
 ## Step 2.5 — Enter Lore context
 
 **Switch working directory:**

@@ -15,7 +15,7 @@ LORE — Agentic intelligence graph and delivery engine
 FRAMEWORK COMMANDS
   /lore:setup <repo-url> <alias>        Connect a project repo
   /lore:sync [alias|--all]              Fetch, merge, push project repos
-  /lore:status                          Show all connected projects
+  /lore:status                          Show connected projects + update check
   /lore:update [alias|--all]            Update framework and/or project plugins
   /lore:uninstall <alias>               Remove a connected project
   /lore:uninstall --all                 Full uninstall (projects + framework)

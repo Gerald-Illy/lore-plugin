@@ -11,8 +11,14 @@ All notable changes to the Lore plugin.
 - **Persist step in content-producing skills:** `note`, `todo`, `feedback`, and `recap` templates now include an explicit Step 5 (Persist) with git add/commit/push and user confirmation — same pattern as `overwrite.md.tpl`.
 
 ### Changed
+- **Merged `/lore` and `/lore:help` into one command:** Deleted `commands/lore.md`. `/lore:help` is now the single help entry point.
+- **Update check moved to `/lore:status` only:** Removed Step 1.5 (plugin update check + session staleness) from `_base.md.tpl`, `templates/help.md.tpl`, and `commands/setup.md`. No more `git fetch` on every skill invocation. Users who want to check for updates run `/lore:status`.
 - **`setup.md` gains Step 6 (Install permissions):** Generates `.claude/settings.json` into the Lore instance directory using token substitution from `settings.json.tpl`.
 - **Setup step numbering:** Register → Step 7, Confirm → Step 8 (was Step 6/7).
+
+### Removed
+- `commands/lore.md` — superseded by `commands/help.md`
+- Step 1.5 from shared preamble (`_base.md.tpl`) and `templates/help.md.tpl`
 
 ---
 
