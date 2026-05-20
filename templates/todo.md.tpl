@@ -53,3 +53,19 @@ After saving, suggest 1–3 contextual follow-up actions based on what was captu
 - Done with input → "See current state? `/{ALIAS}:briefing leads`"
 
 Max 3. Only suggest what is genuinely useful given the context.
+
+## Help
+
+```
+/{ALIAS}:todo — Drop a task for the delivery lead
+
+Usage:  /{ALIAS}:todo [text]
+
+Arguments:
+  Any text describing the task. Saved verbatim.
+
+Examples:
+  /{ALIAS}:todo make sure NITO config is documented
+  /{ALIAS}:todo check with Mat whether the M2 date still holds
+  /{ALIAS}:todo review the inconsistencies from last pull
+```

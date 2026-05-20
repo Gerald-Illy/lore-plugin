@@ -53,3 +53,19 @@ After saving, suggest 1–3 contextual follow-up actions based on what was repor
 - Done for now → "Check overall state? `/{ALIAS}:briefing leads`"
 
 Max 3. Only suggest what is genuinely useful given the feedback.
+
+## Help
+
+```
+/{ALIAS}:feedback — Report a session quality issue
+
+Usage:  /{ALIAS}:feedback [text]
+
+Arguments:
+  What went wrong or was confusing. Saved with session context.
+
+Examples:
+  /{ALIAS}:feedback session showed wrong milestone data for M2
+  /{ALIAS}:feedback briefing completely ignored the PS workstream
+  /{ALIAS}:feedback answers were too long and unfocused
+```

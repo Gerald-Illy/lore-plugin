@@ -62,3 +62,18 @@ After the override:
 - If this is a systemic data quality issue → "Surface all contradictions: `/{ALIAS}:ask "What other information may be wrong about [topic]?"`"
 
 Max 3. Only suggest what is directly relevant.
+
+## Help
+
+```
+/{ALIAS}:overwrite — Correct wrong information
+
+Usage:  /{ALIAS}:overwrite "[wrong]" "[correct]"
+
+Arguments:
+  Two quoted strings: what's wrong, then what's correct.
+
+Examples:
+  /{ALIAS}:overwrite "M3 deadline is June 15" "M3 deadline is July 1 — confirmed by VP 2026-05-07"
+  /{ALIAS}:overwrite "NITO owner is Mat" "NITO owner is Flo since 2026-05"
+```

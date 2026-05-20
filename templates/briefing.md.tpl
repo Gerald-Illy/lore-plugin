@@ -36,3 +36,21 @@ After the briefing, suggest 2–3 contextual follow-up actions based on what sur
 - All clear → "Prep next level up: `/{ALIAS}:briefing vp`"
 
 Phrase as copy-pasteable commands. Max 3. Pick what's most actionable.
+
+## Help
+
+```
+/{ALIAS}:briefing — Stakeholder Briefing
+
+Usage:  /{ALIAS}:briefing [audience]
+
+Arguments:
+  exec     C-Level strategic summary
+  vp       VP-level full project view
+  leads    Delivery lead operational view (default)
+
+Examples:
+  /{ALIAS}:briefing leads
+  /{ALIAS}:briefing vp
+  /{ALIAS}:briefing exec
+```

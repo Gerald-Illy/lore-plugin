@@ -54,3 +54,19 @@ After the recap is handled (saved or skipped), suggest 1–3 contextual follow-u
 - Session is done → "See the big picture? `/{ALIAS}:briefing leads`"
 
 Max 3. Only suggest what is genuinely useful given the recap.
+
+## Help
+
+```
+/{ALIAS}:recap — Summarize this session and offer to save
+
+Usage:  /{ALIAS}:recap [focus]
+
+Arguments:
+  Optional focus topic. Without argument: full session summary.
+
+Examples:
+  /{ALIAS}:recap
+  /{ALIAS}:recap focus on the NITO discussion
+  /{ALIAS}:recap what was said about M2 timeline
+```

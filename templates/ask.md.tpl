@@ -38,3 +38,19 @@ After answering, suggest 1–3 contextual follow-up actions based on what was fo
 - Answer is incomplete → "Dig deeper into a specific area? `/{ALIAS}:ask "[follow-up question]"`"
 
 Max 3. Only suggest what is genuinely useful given the answer.
+
+## Help
+
+```
+/{ALIAS}:ask — Query Lore
+
+Usage:  /{ALIAS}:ask [question]
+
+Arguments:
+  Any natural language question about the project.
+
+Examples:
+  /{ALIAS}:ask "What's the current status of M2?"
+  /{ALIAS}:ask "Who owns the NITO workstream?"
+  /{ALIAS}:ask "What risks were flagged last week?"
+```

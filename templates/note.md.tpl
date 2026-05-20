@@ -53,3 +53,19 @@ After saving, suggest 1–3 contextual follow-up actions based on what was captu
 - This might be wrong info → "Correct something? `/{ALIAS}:overwrite "[wrong]" "[correct]"`"
 
 Max 3. Only suggest what is genuinely useful given the context.
+
+## Help
+
+```
+/{ALIAS}:note — Save a signal or observation
+
+Usage:  /{ALIAS}:note [text]
+
+Arguments:
+  Any observation, signal, or informal intelligence. Saved verbatim.
+
+Examples:
+  /{ALIAS}:note Flo mentioned the Telekom timeline is shifting
+  /{ALIAS}:note Mat seems overloaded — worth flagging
+  /{ALIAS}:note PROJ-123 was mentioned as blocked multiple times
+```

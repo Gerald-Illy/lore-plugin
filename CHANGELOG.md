@@ -4,21 +4,35 @@ All notable changes to the Lore plugin.
 
 ---
 
+## [1.3.1] — 2026-05-21
+
+### Fixed
+- **`setup.md` generates `plugin.json`:** Step 5 now also runs `plugin.json.tpl` through token substitution — version tracking works on fresh setups, not just updates.
+- **CHANGELOG accuracy:** 1.3.0 and 1.2.0 entries corrected to reflect actual release scope.
+
+---
+
 ## [1.3.0] — 2026-05-21
 
 ### Added
-- **Auto-permissions (`settings.json.tpl`):** New template generates `~/.lore/<alias>/.claude/settings.json` at setup time. Auto-allows git operations (pull, push, add, commit, fetch, merge, rev-parse, log), cd, test, and cat on the Lore instance path — users no longer get prompted for every command.
-- **Persist step in content-producing skills:** `note`, `todo`, `feedback`, and `recap` templates now include an explicit Step 5 (Persist) with git add/commit/push and user confirmation — same pattern as `overwrite.md.tpl`.
+- **Auto-permissions (`settings.json.tpl`):** New template generates `~/.lore/<alias>/.claude/settings.json` at setup time. Auto-allows git operations on the Lore instance path — users no longer get prompted for every command.
+- **Persist step in content-producing skills:** `note`, `todo`, `feedback`, and `recap` templates now include a Step 5 (Persist) with git add/commit/push and user confirmation.
+- **`--help` / `-h` support on every skill command:** Step 0 (Help check) in `_base.md.tpl` intercepts `--help` or `-h` and displays the command's built-in Help section. All 8 skill templates now have a `## Help` block with usage, arguments, and examples.
+- **Session-aware update check (Step 1.5):** Version comparison (installed `plugin.json` vs available `plugin.json`) runs once per session using `/tmp/.lore-session-<alias>` marker. After 4h shows a staleness hint suggesting `/lore:sync`.
+- **Available commands allowlist:** `_base.md.tpl` includes an explicit list of installed plugin commands. Claude is instructed to never suggest commands outside this list — repo-only commands are framed differently.
+- **`/lore:sync [alias|--all]` command:** Fetch, merge (`--ff-only`), and push project repos in one step. Also pulls the framework. Resets session markers after sync.
+- **`plugin.json` generation in setup:** `setup.md` Step 5 now also generates `plugin.json` from `plugin.json.tpl` for version tracking.
 
 ### Changed
 - **Merged `/lore` and `/lore:help` into one command:** Deleted `commands/lore.md`. `/lore:help` is now the single help entry point.
-- **Update check moved to `/lore:status` only:** Removed Step 1.5 (plugin update check + session staleness) from `_base.md.tpl`, `templates/help.md.tpl`, and `commands/setup.md`. No more `git fetch` on every skill invocation. Users who want to check for updates run `/lore:status`.
+- **Version comparison replaces git-hash check:** Step 1.5 compares version strings from `plugin.json` files instead of `git rev-parse`. This correctly detects when the framework is pulled but commands haven't been regenerated.
+- **`/lore:update` cleans before regenerating:** `rm -rf` target directory before `mkdir` + generate — removes ghost commands from deleted templates.
 - **`setup.md` gains Step 6 (Install permissions):** Generates `.claude/settings.json` into the Lore instance directory using token substitution from `settings.json.tpl`.
 - **Setup step numbering:** Register → Step 7, Confirm → Step 8 (was Step 6/7).
+- **`status.md` shows installed vs available version:** Reads installed version from `~/.claude/commands/<alias>/plugin.json` and available from `~/.lore/.plugin/.claude-plugin/plugin.json`.
 
 ### Removed
 - `commands/lore.md` — superseded by `commands/help.md`
-- Step 1.5 from shared preamble (`_base.md.tpl`) and `templates/help.md.tpl`
 
 ---
 
@@ -26,11 +40,9 @@ All notable changes to the Lore plugin.
 
 ### Added
 - **4 new skill commands:** `todo`, `note`, `recap`, `feedback` — drop tasks, save observations, summarize sessions, and report quality issues directly from any project.
-- **`/lore:sync [alias|--all]` command:** Fetch, merge, and push project repos in one step. Syncs all projects by default, or a specific one by alias. Also pulls the framework. Resets session markers after sync.
 - **Shared preamble (`_base.md.tpl`):** Steps 1–2.5 extracted into a single reusable partial. Skill templates now only contain their unique Steps 3–5/6. Eliminates ~45 lines of duplicated boilerplate per template.
 
 ### Changed
-- **Session-aware update check (Step 1.5):** Plugin update check now runs only once per session (uses `/tmp/.lore-session-<alias>` marker). After 4h without sync, shows a staleness hint suggesting `/lore:sync <alias>`. No more git fetch on every single command invocation.
 - **Template architecture refactored (DRY):** Generation script in `setup.md` now concatenates `_base.md.tpl` + skill-specific template at build time. Self-contained templates (like `help.md.tpl`) with their own `## Step 1` are used as-is. Output remains one fully self-contained file per command — no runtime dependency on the framework.
 - **`/lore` renamed to `/lore:help`:** The bare `/lore` command was confusing since it just showed help. Now consistently uses the `:help` suffix like project commands (`/<alias>:help`).
 - **`help.md.tpl` expanded:** PLUGIN COMMANDS section now lists all 9 project commands (was 5).

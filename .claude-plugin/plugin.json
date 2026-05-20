@@ -1,6 +1,6 @@
 {
   "name": "lore",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Lore plugin for Claude Code — connect project repos and query them with /lore:setup, /lore:status, /lore:update, /lore:uninstall.",
   "author": "Gerald-Illy"
 }

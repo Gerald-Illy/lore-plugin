@@ -1,5 +1,14 @@
 # Powered by Lore — agentic intelligence graph and delivery engine
 
+## Step 0 — Help check
+
+If `$ARGUMENTS` is exactly `--help` or `-h`:
+1. Sync the repo first (run the git pull from Step 1 so paths are available)
+2. Find the skill path referenced in Step 3 of this file (e.g. `{REPO_PATH}/.claude/skills/<name>/SKILL.md`)
+3. If that SKILL.md exists and contains a `## Help` section → display the skill's Help section
+4. Otherwise → find the `## Help` section below in this command file and display it
+- **Stop here. Do not continue with Step 2.**
+
 ## Step 1 — Sync the repo
 
 Run:

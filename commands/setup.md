@@ -109,6 +109,12 @@ for f in ~/.lore/.plugin/templates/*.md.tpl; do
   fi
   echo "Written: ~/.claude/commands/$ALIAS/${name}.md"
 done
+# Also generate plugin.json
+sed -e "s|{ALIAS}|$ALIAS|g" \
+    -e "s|{REPO_URL}|$REPO_URL|g" \
+    -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
+    ~/.lore/.plugin/templates/plugin.json.tpl > ~/.claude/commands/$ALIAS/plugin.json
+echo "Written: ~/.claude/commands/$ALIAS/plugin.json"
 ```
 
 If the loop fails (e.g. templates directory missing): tell the user to run `/lore:update` to restore the plugin, then retry.

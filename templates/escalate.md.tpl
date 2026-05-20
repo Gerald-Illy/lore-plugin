@@ -39,3 +39,19 @@ After the escalation draft, suggest 1–3 contextual follow-up actions.
 - Wrong info at the source → "Correct it: `/{ALIAS}:overwrite "[wrong]" "[correct]"`"
 
 Max 3. Pick what's most actionable given the situation.
+
+## Help
+
+```
+/{ALIAS}:escalate — Draft Escalation
+
+Usage:  /{ALIAS}:escalate [ID or description]
+
+Arguments:
+  A Jira ticket ID or plain text description of what to escalate.
+
+Examples:
+  /{ALIAS}:escalate PROJ-1234
+  /{ALIAS}:escalate "M2 deadline at risk due to dependency on Team X"
+  /{ALIAS}:escalate "No owner assigned to the auth migration"
+```

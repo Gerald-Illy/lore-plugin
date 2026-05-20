@@ -32,8 +32,9 @@ git -C ~/.lore/.plugin pull --quiet && echo "FRAMEWORK_UPDATED" || echo "FRAMEWO
 
 - If `FRAMEWORK_ERROR`: warn "⚠ Could not pull framework from GitHub. Check your connection." Continue anyway (the rest can still run with what's on disk).
 
-After a successful pull, re-copy the framework commands to apply any changes:
+After a successful pull, re-install the framework commands (clean + copy to remove deleted commands):
 ```bash
+rm -rf ~/.claude/commands/lore
 mkdir -p ~/.claude/commands/lore
 cp ~/.lore/.plugin/commands/* ~/.claude/commands/lore/
 ```
@@ -80,14 +81,31 @@ For each alias in TARGETS (that is not SKIP):
 Read `config.json` to get `REPO_URL` for this alias. Then run:
 
 ```bash
+rm -rf ~/.claude/commands/<ALIAS>
 mkdir -p ~/.claude/commands/<ALIAS>
+BASE=~/.lore/.plugin/templates/_base.md.tpl
 for f in ~/.lore/.plugin/templates/*.md.tpl; do
   name=$(basename "$f" .md.tpl)
-  sed -e "s|{ALIAS}|<ALIAS>|g" \
-      -e "s|{REPO_URL}|<REPO_URL>|g" \
-      -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
-      "$f" > ~/.claude/commands/<ALIAS>/${name}.md
+  # Skip partials (files starting with _)
+  [[ "$name" == _* ]] && continue
+  # If template has no Step 1, prepend the shared base
+  if ! grep -q "^## Step 1" "$f"; then
+    cat "$BASE" "$f" | sed -e "s|{ALIAS}|<ALIAS>|g" \
+        -e "s|{REPO_URL}|<REPO_URL>|g" \
+        -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
+        > ~/.claude/commands/<ALIAS>/${name}.md
+  else
+    sed -e "s|{ALIAS}|<ALIAS>|g" \
+        -e "s|{REPO_URL}|<REPO_URL>|g" \
+        -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
+        "$f" > ~/.claude/commands/<ALIAS>/${name}.md
+  fi
 done
+# Also generate plugin.json
+sed -e "s|{ALIAS}|<ALIAS>|g" \
+    -e "s|{REPO_URL}|<REPO_URL>|g" \
+    -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
+    ~/.lore/.plugin/templates/plugin.json.tpl > ~/.claude/commands/<ALIAS>/plugin.json
 echo "Plugin regenerated: <ALIAS>"
 ```
 
