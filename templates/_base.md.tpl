@@ -17,10 +17,14 @@ Run:
 ```bash
 MARKER="/tmp/.lore-session-{ALIAS}"
 if [ ! -f "$MARKER" ]; then
-  git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
-  LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
-  REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
-  [ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+  # First run this session — check installed vs available version
+  INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+  AVAILABLE=$(grep -o '"version": "[^"]*"' ~/.lore/.plugin/.claude-plugin/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+  if [ -n "$AVAILABLE" ] && [ "$INSTALLED" != "$AVAILABLE" ]; then
+    echo "COMMANDS_OUTDATED:$INSTALLED:$AVAILABLE"
+  else
+    echo "COMMANDS_CURRENT"
+  fi
   date +%s > "$MARKER"
 elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
   echo "SESSION_STALE"
@@ -31,15 +35,15 @@ fi
 
 Handle the output:
 
-- `PLUGIN_UPDATE_AVAILABLE` → Show once (before any other output):
+- `COMMANDS_OUTDATED:<old>:<new>` → Show once (before any other output):
   ```
-  ℹ Lore plugin update available. Run: /lore:update --all
+  ⚠ Plugin commands outdated (v<old> → v<new>). Run: /lore:update {ALIAS}
   ```
 - `SESSION_STALE` → Show once:
   ```
   ℹ Session active for >4h. Consider syncing: /lore:sync {ALIAS}
   ```
-- `SESSION_OK` or `PLUGIN_CURRENT` → proceed silently.
+- `SESSION_OK` or `COMMANDS_CURRENT` → proceed silently.
 
 **Continue with Step 2 in all cases.** Never block execution.
 

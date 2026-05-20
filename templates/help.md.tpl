@@ -12,6 +12,41 @@ If the output contains `REPO_MISSING`:
 - Tell the user: "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`"
 - **Stop here. Do not continue.**
 
+## Step 1.5 — Session checks (once per session)
+
+Run:
+```bash
+MARKER="/tmp/.lore-session-{ALIAS}"
+if [ ! -f "$MARKER" ]; then
+  INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+  AVAILABLE=$(grep -o '"version": "[^"]*"' ~/.lore/.plugin/.claude-plugin/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+  if [ -n "$AVAILABLE" ] && [ "$INSTALLED" != "$AVAILABLE" ]; then
+    echo "COMMANDS_OUTDATED:$INSTALLED:$AVAILABLE"
+  else
+    echo "COMMANDS_CURRENT"
+  fi
+  date +%s > "$MARKER"
+elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
+  echo "SESSION_STALE"
+else
+  echo "SESSION_OK"
+fi
+```
+
+Handle the output:
+
+- `COMMANDS_OUTDATED:<old>:<new>` → Show once (before any other output):
+  ```
+  ⚠ Plugin commands outdated (v<old> → v<new>). Run: /lore:update {ALIAS}
+  ```
+- `SESSION_STALE` → Show once:
+  ```
+  ℹ Session active for >4h. Consider syncing: /lore:sync {ALIAS}
+  ```
+- `SESSION_OK` or `COMMANDS_CURRENT` → proceed silently.
+
+**Continue with Step 2 in all cases.** Never block execution.
+
 ## Step 2 — Show the help
 
 Read `{REPO_PATH}/CLAUDE.md` to understand the full command set available in this Lore instance.
