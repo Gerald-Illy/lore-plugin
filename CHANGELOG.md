@@ -4,6 +4,18 @@ All notable changes to the Lore plugin.
 
 ---
 
+## [1.3.0] — 2026-05-21
+
+### Added
+- **Auto-permissions (`settings.json.tpl`):** New template generates `~/.lore/<alias>/.claude/settings.json` at setup time. Auto-allows git operations (pull, push, add, commit, fetch, merge, rev-parse, log), cd, test, and cat on the Lore instance path — users no longer get prompted for every command.
+- **Persist step in content-producing skills:** `note`, `todo`, `feedback`, and `recap` templates now include an explicit Step 5 (Persist) with git add/commit/push and user confirmation — same pattern as `overwrite.md.tpl`.
+
+### Changed
+- **`setup.md` gains Step 6 (Install permissions):** Generates `.claude/settings.json` into the Lore instance directory using token substitution from `settings.json.tpl`.
+- **Setup step numbering:** Register → Step 7, Confirm → Step 8 (was Step 6/7).
+
+---
+
 ## [1.2.0] — 2026-05-21
 
 ### Added
