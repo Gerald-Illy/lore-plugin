@@ -16,22 +16,37 @@ If `MISSING`:
 
 ---
 
-## Step 1.5 — Check for plugin updates
+## Step 1.5 — Session checks (once per session)
 
 Run:
 ```bash
-git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
-LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
-REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
-[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+MARKER="/tmp/.lore-session-lore"
+if [ ! -f "$MARKER" ]; then
+  git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+  LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+  REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+  [ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+  date +%s > "$MARKER"
+elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
+  echo "SESSION_STALE"
+else
+  echo "SESSION_OK"
+fi
 ```
 
-If `PLUGIN_UPDATE_AVAILABLE`:
-- Show this notification once (before any other output):
+Handle the output:
+
+- `PLUGIN_UPDATE_AVAILABLE` → Show once:
   ```
   ℹ Lore plugin update available. Run: /lore:update --all
   ```
-- **Continue with Step 2.** Do not block execution.
+- `SESSION_STALE` → Show once:
+  ```
+  ℹ Session active for >4h. Consider syncing: /lore:sync
+  ```
+- `SESSION_OK` or `PLUGIN_CURRENT` → proceed silently.
+
+**Continue with Step 2 in all cases.**
 
 ---
 
@@ -48,15 +63,24 @@ If the file does not exist or is empty:
 
 ---
 
-## Step 3 — Show connected projects
+## Step 3 — Show connected projects with version check
 
-For each project in `config.json → projects`:
+**Read the framework version (latest available):**
+```bash
+cat ~/.lore/.plugin/.claude-plugin/plugin.json 2>/dev/null
+```
+Extract the `version` field → this is the **repo version** (what's available).
+
+**For each project in `config.json → projects`:**
 
 Run per project:
 ```bash
-git -C ~/.lore/<ALIAS> log --oneline -1 2>/dev/null || echo "SYNC_ERROR"
-git -C ~/.lore/<ALIAS> log -1 --format="%ar" 2>/dev/null || echo "unknown"
+ALIAS="<alias>"
+git -C ~/.lore/$ALIAS log -1 --format="%ar" 2>/dev/null || echo "SYNC_ERROR"
+cat ~/.claude/commands/$ALIAS/plugin.json 2>/dev/null || echo "NOT_INSTALLED"
 ```
+
+Compare the `version` field from `~/.claude/commands/<alias>/plugin.json` (installed) against the framework repo version (available).
 
 Display a status table:
 
@@ -64,10 +88,13 @@ Display a status table:
 LORE — Connected Projects
 ════════════════════════════════════════════════════════
 
-  Alias      Repo                                  Last sync
-  ─────      ────                                  ─────────
-  myproject  github.com/YourOrg/YourProject        2 hours ago
-  work       github.com/YourOrg/AnotherProject     3 days ago
+  Alias      Repo                                  Last sync       Installed
+  ─────      ────                                  ─────────       ─────────
+  myproject  github.com/YourOrg/YourProject        2 hours ago     ✅ v1.3.0
+  work       github.com/YourOrg/AnotherProject     3 days ago      ⚠ v1.1.0 (outdated)
+
+  Framework repo:     v1.3.0 (latest)
+  Framework commands: ~/.lore/.plugin
 
 ════════════════════════════════════════════════════════
 
@@ -88,15 +115,20 @@ Update framework:       /lore:update [alias|--all]
 Uninstall project:      /lore:uninstall <alias>
 Uninstall everything:   /lore:uninstall --all
 Lore help:              /lore:help
-Lore framework:         ~/.lore/.plugin (version: <read from ~/.lore/.plugin/.claude-plugin/plugin.json>)
 ```
 
-If a project shows `SYNC_ERROR`: note it in the table as `⚠ repo missing — run /lore:setup again`.
+**Version status per project:**
+- Installed version matches repo version → `✅ v1.3.0`
+- Installed version is older → `⚠ v1.1.0 (outdated → run /lore:update <alias>)`
+- No `plugin.json` found in commands dir → `❌ not installed (run /lore:setup)`
+
+If a project shows `SYNC_ERROR`: note it as `⚠ repo missing — run /lore:setup again`.
 
 ---
 
 ## Step 4 — Suggest next step
 
-If there is exactly one project: suggest `/<alias>:briefing leads`.
-If there are multiple projects: suggest the one that was synced most recently.
-If any project has a sync error: suggest fixing it first with `/lore:setup`.
+- If any project is **outdated**: suggest `/lore:update --all` first.
+- If any project has a **sync error**: suggest `/lore:setup` for that project.
+- If everything is up to date and there is exactly one project: suggest `/<alias>:briefing leads`.
+- If everything is up to date and there are multiple projects: suggest the one synced most recently.
