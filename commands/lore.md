@@ -3,11 +3,28 @@
 
 ---
 
+## Update check
+
+Run:
+```bash
+git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+```
+
+If `PLUGIN_UPDATE_AVAILABLE`: show this notification before the help text:
+```
+ℹ Lore plugin update available. Run: /lore:update --all
+```
+
+---
+
 Display the following help text exactly:
 
 ```
 LORE — Agentic intelligence graph and delivery engine
-══════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════
 
   Lore connects project repos to Claude Code, giving you a living
   project memory you can query, brief from, and escalate through.
@@ -40,7 +57,7 @@ INSTALLATION
   Windows:    irm https://raw.githubusercontent.com/Gerald-Illy/lore-plugin/master/setup.ps1 | iex
 
 Framework: ~/.lore/.plugin
-══════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════
 ```
 
 Do not add commentary. Output only the block above.

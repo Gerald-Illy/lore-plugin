@@ -25,6 +25,25 @@ If `MISSING`:
 - If `CLONE_FAILED`: tell the user to check their connection or run `gh auth login` if the repo is private. **Stop here.**
 - If `CLONED`: continue.
 
+## Step 1.5 — Check for plugin updates
+
+Only if the framework was already present (Step 1 returned `OK`):
+
+Run:
+```bash
+git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
+LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
+REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
+[ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
+```
+
+If `PLUGIN_UPDATE_AVAILABLE`:
+- Show this notification once (before any other output):
+  ```
+  ℹ Lore plugin update available. Run: /lore:update --all
+  ```
+- **Continue with Step 2.** Do not block execution.
+
 ---
 
 ## Step 2 — Parse arguments
@@ -62,7 +81,7 @@ If this fails, check the error output for clues:
 
 - **Access denied / 403 / "Repository not found" / "could not read Username":**
   Tell the user:
-  > "You don't have access to `<REPO_URL>`.
+  > "You don’t have access to `<REPO_URL>`.
   > Please ask the repository owner to grant you read access, then retry `/lore:setup`."
   **Stop here.**
 - **Not authenticated (private repo, no credentials):**

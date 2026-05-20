@@ -40,6 +40,7 @@ All notable changes to the Lore plugin.
 
 ### Added
 - **Plugin update check (Step 1.5):** All 5 command templates (briefing, ask, escalate, overwrite, help) now check if the Lore framework has pending updates after syncing the project repo. Shows a one-line notification (`ℹ Lore plugin update available. Run: /lore:update --all`) without blocking execution.
+- **Framework command update check:** `/lore`, `/lore:status`, and `/lore:setup` also check for pending updates and notify. Skipped for `/lore:update` (already updates) and `/lore:uninstall` (user is removing).
 - **Lore instance compatibility:** DTA-Launch-Control CLAUDE.md now includes the same update check — works even with old templates installed locally (solves the chicken-and-egg problem).
 
 ### Changed
