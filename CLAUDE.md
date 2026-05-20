@@ -28,18 +28,24 @@ When a user runs `/lore:setup github:Org/Repo alias`, it:
   plugin.json           ← Plugin manifest. Prefix: "lore". Author: this repo's URL.
 
 commands/
-  lore.md               ← /lore — help
+  help.md               ← /lore:help — help
   setup.md              ← /lore:setup <repo-url> <alias>
+  sync.md               ← /lore:sync [alias|--all]
   status.md             ← /lore:status
   update.md             ← /lore:update [alias|--all]
   uninstall.md          ← /lore:uninstall <alias>|--all
 
 templates/
-  briefing.md.tpl       ← Generated commands/briefing.md
-  ask.md.tpl            ← Generated commands/ask.md
-  escalate.md.tpl       ← Generated commands/escalate.md
-  overwrite.md.tpl      ← Generated commands/overwrite.md
-  help.md.tpl           ← Generated commands/help.md
+  _base.md.tpl          ← Shared preamble (Steps 1–2.5), prepended to skill templates
+  briefing.md.tpl       ← Generated commands/briefing.md (Steps 3–5 only)
+  ask.md.tpl            ← Generated commands/ask.md (Steps 3–5 only)
+  escalate.md.tpl       ← Generated commands/escalate.md (Steps 3–5 only)
+  overwrite.md.tpl      ← Generated commands/overwrite.md (Steps 3–6 only)
+  todo.md.tpl           ← Generated commands/todo.md (Steps 3–5 only)
+  note.md.tpl           ← Generated commands/note.md (Steps 3–5 only)
+  recap.md.tpl          ← Generated commands/recap.md (Steps 3–5 only)
+  feedback.md.tpl       ← Generated commands/feedback.md (Steps 3–5 only)
+  help.md.tpl           ← Generated commands/help.md (self-contained, has own Step 1)
 
 setup.sh                ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Mac/Linux)
 setup.ps1               ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Windows)
@@ -76,8 +82,17 @@ Templates use three substitution tokens:
 | `{REPO_URL}` | The full repo URL (e.g. `https://github.com/Org/Repo.git`) |
 | `{REPO_PATH}` | The local clone path (e.g. `~/.lore/myproject`) — NOT shell-expanded |
 
-Every template is a complete, standalone Claude Code command file after substitution.
+Every generated command is a complete, standalone Claude Code command file after substitution.
 Templates must never reference project-specific content — they are fully generic.
+
+### Shared preamble (`_base.md.tpl`)
+
+Steps 1–2.5 are identical across all skill commands and live in `templates/_base.md.tpl`.
+Skill templates only contain their unique Steps (3–5 or 3–6). At generation time, `_base.md.tpl`
+is automatically prepended to any template that does not contain its own `## Step 1`.
+
+Templates starting with `_` are partials — they are never generated as standalone commands.
+Self-contained templates (like `help.md.tpl`) include their own Step 1 and are used as-is.
 
 ---
 
@@ -133,13 +148,12 @@ If a required file is missing, the command tells the user rather than failing si
 
 ## How to add a new command
 
-1. Add `<name>.md.tpl` to `templates/` following the 6-step pattern above (for project commands)
+1. Add `<name>.md.tpl` to `templates/` with Steps 3–5 only (the shared preamble is prepended automatically)
    — or add `<name>.md` directly to `commands/` (for framework commands like `uninstall`)
-2. Add the file to the mapping table in `commands/setup.md` (Step 5) — project commands only
-3. Add the command to the confirm block in `commands/setup.md` (Step 7) — project commands only
-4. Add the command to the display in `templates/help.md.tpl` — project commands only
-5. Add the command to `commands/lore.md` (Framework commands section)
-6. Add the command to `commands/status.md` (Commands available section)
+2. Add the command to the confirm block in `commands/setup.md` (Step 7) — project commands only
+3. Add the command to the display in `templates/help.md.tpl` — project commands only
+4. Add the command to `commands/help.md` (Framework commands section)
+5. Add the command to `commands/status.md` (Commands available section)
 
 The new command will be generated for all future `/lore:setup` calls.
 Existing connected projects need to be reconnected: `/lore:setup <repo-url> <alias>`

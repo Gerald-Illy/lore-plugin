@@ -4,6 +4,26 @@ All notable changes to the Lore plugin.
 
 ---
 
+## [1.2.0] — 2026-05-21
+
+### Added
+- **4 new skill commands:** `todo`, `note`, `recap`, `feedback` — drop tasks, save observations, summarize sessions, and report quality issues directly from any project.
+- **`/lore:sync [alias|--all]` command:** Fetch, merge, and push project repos in one step. Syncs all projects by default, or a specific one by alias. Also pulls the framework. Resets session markers after sync.
+- **Shared preamble (`_base.md.tpl`):** Steps 1–2.5 extracted into a single reusable partial. Skill templates now only contain their unique Steps 3–5/6. Eliminates ~45 lines of duplicated boilerplate per template.
+
+### Changed
+- **Session-aware update check (Step 1.5):** Plugin update check now runs only once per session (uses `/tmp/.lore-session-<alias>` marker). After 4h without sync, shows a staleness hint suggesting `/lore:sync <alias>`. No more git fetch on every single command invocation.
+- **Template architecture refactored (DRY):** Generation script in `setup.md` now concatenates `_base.md.tpl` + skill-specific template at build time. Self-contained templates (like `help.md.tpl`) with their own `## Step 1` are used as-is. Output remains one fully self-contained file per command — no runtime dependency on the framework.
+- **`/lore` renamed to `/lore:help`:** The bare `/lore` command was confusing since it just showed help. Now consistently uses the `:help` suffix like project commands (`/<alias>:help`).
+- **`help.md.tpl` expanded:** PLUGIN COMMANDS section now lists all 9 project commands (was 5).
+- **`setup.md` Step 7 updated:** Confirmation block shows all generated commands.
+- **`status.md` updated:** Commands available section lists all 9 project commands.
+
+### Fixed
+- Generation script now skips `_`-prefixed partials (prevents `_base.md` from being generated as a standalone command).
+
+---
+
 ## [1.1.0] — 2026-05-13
 
 ### Added

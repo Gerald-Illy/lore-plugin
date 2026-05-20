@@ -1,4 +1,4 @@
-# /lore — Lore help
+# /lore:help — Lore help
 # Powered by Lore — agentic intelligence graph and delivery engine
 
 ---
@@ -14,11 +14,12 @@ LORE — Agentic intelligence graph and delivery engine
 
 FRAMEWORK COMMANDS
   /lore:setup <repo-url> <alias>        Connect a project repo
+  /lore:sync [alias|--all]              Fetch, merge, push project repos
   /lore:status                          Show all connected projects
   /lore:update [alias|--all]            Update framework and/or project plugins
   /lore:uninstall <alias>               Remove a connected project
   /lore:uninstall --all                 Full uninstall (projects + framework)
-  /lore                                 Show this help
+  /lore:help                            Show this help
 
 SETUP EXAMPLES
   /lore:setup github:YourOrg/YourProject myproject

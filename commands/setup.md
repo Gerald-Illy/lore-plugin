@@ -90,12 +90,23 @@ test -d ~/.lore/$ALIAS/.claude/skills && echo "HAS_SKILLS" || echo "NO_SKILLS"
 Run:
 ```bash
 mkdir -p ~/.claude/commands/$ALIAS
+BASE=~/.lore/.plugin/templates/_base.md.tpl
 for f in ~/.lore/.plugin/templates/*.md.tpl; do
   name=$(basename "$f" .md.tpl)
-  sed -e "s|{ALIAS}|$ALIAS|g" \
-      -e "s|{REPO_URL}|$REPO_URL|g" \
-      -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
-      "$f" > ~/.claude/commands/$ALIAS/${name}.md
+  # Skip partials (files starting with _)
+  [[ "$name" == _* ]] && continue
+  # If template has no Step 1, prepend the shared base
+  if ! grep -q "^## Step 1" "$f"; then
+    cat "$BASE" "$f" | sed -e "s|{ALIAS}|$ALIAS|g" \
+        -e "s|{REPO_URL}|$REPO_URL|g" \
+        -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
+        > ~/.claude/commands/$ALIAS/${name}.md
+  else
+    sed -e "s|{ALIAS}|$ALIAS|g" \
+        -e "s|{REPO_URL}|$REPO_URL|g" \
+        -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
+        "$f" > ~/.claude/commands/$ALIAS/${name}.md
+  fi
   echo "Written: ~/.claude/commands/$ALIAS/${name}.md"
 done
 ```
@@ -104,7 +115,24 @@ If the loop fails (e.g. templates directory missing): tell the user to run `/lor
 
 ---
 
-## Step 6 — Register the project in Lore config
+## Step 6 — Install permissions for the Lore instance
+
+Run:
+```bash
+mkdir -p ~/.lore/$ALIAS/.claude
+sed -e "s|{ALIAS}|$ALIAS|g" \
+    -e "s|{REPO_URL}|$REPO_URL|g" \
+    -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
+    ~/.lore/.plugin/templates/settings.json.tpl \
+    > ~/.lore/$ALIAS/.claude/settings.json
+echo "Written: ~/.lore/$ALIAS/.claude/settings.json"
+```
+
+This auto-allows git and file operations on the Lore instance so users don't get prompted for every command.
+
+---
+
+## Step 7 — Register the project in Lore config
 
 Read `~/.lore/config.json` (if it does not exist, start with `{}`).
 
@@ -125,7 +153,7 @@ Write back to `~/.lore/config.json`.
 
 ---
 
-## Step 7 — Confirm
+## Step 8 — Confirm
 
 Tell the user:
 
@@ -134,7 +162,8 @@ Tell the user:
 
    Repo:      <REPO_URL>
    Local:     ~/.lore/<ALIAS>
-   Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite   /<ALIAS>:help
+   Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
+              /<ALIAS>:todo   /<ALIAS>:note   /<ALIAS>:recap   /<ALIAS>:feedback   /<ALIAS>:help
 
 To remove this project: /lore:uninstall <ALIAS>
 To remove everything:   /lore:uninstall --all

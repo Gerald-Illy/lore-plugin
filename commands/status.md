@@ -57,13 +57,18 @@ Commands available:
   /<alias>:ask [question]
   /<alias>:escalate [ID or description]
   /<alias>:overwrite "[wrong]" "[correct]"
+  /<alias>:todo [text]
+  /<alias>:note [text]
+  /<alias>:recap [focus]
+  /<alias>:feedback [text]
   /<alias>:help
 
 Connect a new project:  /lore:setup <repo-url> <alias>
+Sync projects:          /lore:sync [alias|--all]
 Update framework:       /lore:update [alias|--all]
 Uninstall project:      /lore:uninstall <alias>
 Uninstall everything:   /lore:uninstall --all
-Lore help:              /lore
+Lore help:              /lore:help
 Lore framework:         ~/.lore/.plugin (version: <read from ~/.lore/.plugin/.claude-plugin/plugin.json>)
 ```
 
