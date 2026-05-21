@@ -30,10 +30,7 @@ ONCE A PROJECT IS CONNECTED
   /<alias>:ask [question]               Query project memory
   /<alias>:escalate [ID or description] Draft an escalation
   /<alias>:overwrite "[wrong]" "[right]" Correct wrong information
-  /<alias>:todo [text]                  Drop a task for the delivery lead
-  /<alias>:note [text]                  Save a signal or observation
-  /<alias>:recap [focus]                Summarize session and offer to save
-  /<alias>:feedback [text]              Report a session quality issue
+  /<alias>:jot [text]                   Capture anything: notes, todos, feedback, recaps
   /<alias>:help                         Show commands for that project
 
 INSTALLATION

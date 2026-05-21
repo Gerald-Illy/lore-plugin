@@ -1,31 +1,13 @@
 # /{ALIAS}:help — What Lore can do for you
 # Powered by Lore — agentic intelligence graph and delivery engine
 
-## Step 1 — Sync the repo
-
-Run:
-```bash
-git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "REPO_MISSING"
-```
-
-If the output contains `REPO_MISSING`:
-- Tell the user: "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`"
-- **Stop here. Do not continue.**
-
-## Step 1.5 — Session checks (once per session)
+## Step 1 — Session sync (once per session)
 
 Run:
 ```bash
 MARKER="/tmp/.lore-session-{ALIAS}"
 if [ ! -f "$MARKER" ]; then
-  INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
-  AVAILABLE=$(grep -o '"version": "[^"]*"' ~/.lore/.plugin/.claude-plugin/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
-  if [ -n "$AVAILABLE" ] && [ "$INSTALLED" != "$AVAILABLE" ]; then
-    echo "COMMANDS_OUTDATED:$INSTALLED:$AVAILABLE"
-  else
-    echo "COMMANDS_CURRENT"
-  fi
-  date +%s > "$MARKER"
+  echo "FIRST_RUN"
 elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
   echo "SESSION_STALE"
 else
@@ -35,17 +17,33 @@ fi
 
 Handle the output:
 
-- `COMMANDS_OUTDATED:<old>:<new>` → Show once (before any other output):
-  ```
-  ⚠ Plugin commands outdated (v<old> → v<new>). Run: /lore:update {ALIAS}
-  ```
-- `SESSION_STALE` → Show once:
+- **`FIRST_RUN`** — First command this session. Do all of the following:
+  1. Pull the project repo:
+     ```bash
+     git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "REPO_MISSING"
+     ```
+     If `REPO_MISSING`: tell the user "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`" — **Stop here.**
+  2. Check for plugin updates:
+     ```bash
+     INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+     AVAILABLE=$(grep -o '"version": "[^"]*"' ~/.lore/.plugin/.claude-plugin/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
+     [ -n "$AVAILABLE" ] && [ "$INSTALLED" != "$AVAILABLE" ] && echo "COMMANDS_OUTDATED:$INSTALLED:$AVAILABLE"
+     ```
+     If `COMMANDS_OUTDATED:<old>:<new>` → show once: `⚠ Plugin commands outdated (v<old> → v<new>). Run: /lore:update {ALIAS}`
+  3. Write the session marker:
+     ```bash
+     date +%s > /tmp/.lore-session-{ALIAS}
+     ```
+
+- **`SESSION_STALE`** — Session older than 4h. Show once:
   ```
   ℹ Session active for >4h. Consider syncing: /lore:sync {ALIAS}
   ```
-- `SESSION_OK` or `COMMANDS_CURRENT` → proceed silently.
+  Then continue (no pull, no block).
 
-**Continue with Step 2 in all cases.** Never block execution.
+- **`SESSION_OK`** — Proceed silently. No pull, no checks.
+
+**Continue with Step 2 in all cases** (unless stopped by REPO_MISSING).
 
 ## Step 2 — Show the help
 
@@ -68,10 +66,7 @@ PLUGIN COMMANDS (available from any project)
   /{ALIAS}:ask [question]             Query Lore — intelligence graph → logs → sources
   /{ALIAS}:escalate [ID or desc]      Draft escalation to responsible owner
   /{ALIAS}:overwrite "[x]" "[y]"      Correct wrong information — override + push
-  /{ALIAS}:todo [text]                Drop a task for the delivery lead
-  /{ALIAS}:note [text]                Save a signal or observation
-  /{ALIAS}:recap [focus]              Summarize session and offer to save
-  /{ALIAS}:feedback [text]            Report a session quality issue
+  /{ALIAS}:jot [text]                 Capture anything: notes, todos, feedback, recaps
   /{ALIAS}:help                       This help page
 
 ═══════════════════════════════════════════════════════════════

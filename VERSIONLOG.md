@@ -1,13 +1,42 @@
-# Changelog
+# Version Log
 
-All notable changes to the Lore plugin.
+All versions of the Lore plugin.
+
+---
+
+## [1.4.0] — 2026-05-21
+
+### Added
+- **`/jot` command:** Unified capture skill replaces 4 separate commands (todo, note, recap, feedback). Detects type from first word or context. Single entry point for all session-time contributions.
+- **Runtime `_preamble.md`:** New `_preamble.md.tpl` generates `~/.claude/commands/{ALIAS}/_preamble.md` at setup time. Contains Steps 0–2.5 (help check, session sync, identity, context entry) + available commands list. Skills read this at runtime instead of embedding the boilerplate.
+- **Persist step in `/jot`:** Step 5 offers to git add/commit/push when files were created.
+
+### Changed
+- **Session sync merged:** Step 1 + 1.5 consolidated into single "Step 1 — Session sync". Git pull only runs on first invocation per session (marker-based). Subsequent commands skip the pull entirely. After 4h shows staleness hint.
+- **Skill templates slimmed:** All skill templates (briefing, ask, escalate, overwrite, jot) now contain only Steps 3–6 + Help. They reference the runtime preamble with "Read `_preamble.md` and execute Steps 0–2.5 before continuing."
+- **`regenerate.sh` simplified:** Removed `_base.md.tpl` concatenation logic. Now just runs each template through `sed` directly.
+- **Command count reduced from 9 to 6:** Project commands are now briefing, ask, escalate, overwrite, jot, help.
+- **`CHANGELOG.md` → `VERSIONLOG.md`:** Renamed for clarity.
+
+### Removed
+- **`_base.md.tpl`** — no longer needed (runtime preamble replaces build-time concatenation).
+- **`todo.md.tpl`**, **`note.md.tpl`**, **`recap.md.tpl`**, **`feedback.md.tpl`** — replaced by `jot.md.tpl`.
 
 ---
 
 ## [1.3.1] — 2026-05-21
 
+### Added
+- **`scripts/regenerate.sh`:** Centralized project plugin generation script. Both `setup.md` and `update.md` call this script instead of embedding inline bash loops. Future changes to generation logic only require updating this one file.
+- **Self-updating `/lore:update`:** Step 2 now explicitly pulls the framework and re-installs framework commands BEFORE running the regeneration script. Since the script lives in the freshly pulled framework, it's always the latest version — no more chicken-and-egg problems.
+
+### Changed
+- **Templates fully self-contained:** All 8 skill templates now contain the complete base preamble (Steps 0–2.5 + Available commands) inline. `_base.md.tpl` is empty (placeholder for future re-extraction once all users are on this version).
+- **Generation scripts simplified:** `setup.md` and `update.md` both delegate to `scripts/regenerate.sh` instead of inline loops.
+- **`setup.md` generates `plugin.json`:** Step 5 now also runs `plugin.json.tpl` through token substitution via the regeneration script.
+
 ### Fixed
-- **`setup.md` generates `plugin.json`:** Step 5 now also runs `plugin.json.tpl` through token substitution — version tracking works on fresh setups, not just updates.
+- **Skill description in Claude Code:** Templates now start with the correct `# /{ALIAS}:command — Description` line as the first content, so Claude Code shows meaningful skill names instead of "Powered by Lore".
 - **CHANGELOG accuracy:** 1.3.0 and 1.2.0 entries corrected to reflect actual release scope.
 
 ---

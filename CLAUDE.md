@@ -36,16 +36,17 @@ commands/
   uninstall.md          ← /lore:uninstall <alias>|--all
 
 templates/
-  _base.md.tpl          ← Shared preamble (Steps 1–2.5), prepended to skill templates
-  briefing.md.tpl       ← Generated commands/briefing.md (Steps 3–5 only)
-  ask.md.tpl            ← Generated commands/ask.md (Steps 3–5 only)
-  escalate.md.tpl       ← Generated commands/escalate.md (Steps 3–5 only)
-  overwrite.md.tpl      ← Generated commands/overwrite.md (Steps 3–6 only)
-  todo.md.tpl           ← Generated commands/todo.md (Steps 3–5 only)
-  note.md.tpl           ← Generated commands/note.md (Steps 3–5 only)
-  recap.md.tpl          ← Generated commands/recap.md (Steps 3–5 only)
-  feedback.md.tpl       ← Generated commands/feedback.md (Steps 3–5 only)
+  _preamble.md.tpl      ← Runtime shared context (Steps 0–2.5 + commands list)
+  briefing.md.tpl       ← Generated commands/briefing.md (references _preamble)
+  ask.md.tpl            ← Generated commands/ask.md (references _preamble)
+  escalate.md.tpl       ← Generated commands/escalate.md (references _preamble)
+  overwrite.md.tpl      ← Generated commands/overwrite.md (references _preamble)
+  jot.md.tpl            ← Generated commands/jot.md (references _preamble)
   help.md.tpl           ← Generated commands/help.md (self-contained, has own Step 1)
+  plugin.json.tpl       ← Generated commands/plugin.json
+
+scripts/
+  regenerate.sh         ← Project plugin generation (called by setup + update)
 
 setup.sh                ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Mac/Linux)
 setup.ps1               ← Bootstrap: clone to ~/.lore/.plugin/ + copy commands (Windows)
@@ -85,13 +86,15 @@ Templates use three substitution tokens:
 Every generated command is a complete, standalone Claude Code command file after substitution.
 Templates must never reference project-specific content — they are fully generic.
 
-### Shared preamble (`_base.md.tpl`)
+### Shared preamble (`_preamble.md.tpl`)
 
-Steps 1–2.5 are identical across all skill commands and live in `templates/_base.md.tpl`.
-Skill templates only contain their unique Steps (3–5 or 3–6). At generation time, `_base.md.tpl`
-is automatically prepended to any template that does not contain its own `## Step 1`.
+Steps 0–2.5 are identical across all skill commands and live in `templates/_preamble.md.tpl`.
+At generation time, this produces `~/.claude/commands/{ALIAS}/_preamble.md` — a runtime file
+that each skill reads before executing. Skills say:
+"Read `~/.claude/commands/{ALIAS}/_preamble.md` and execute Steps 0–2.5 before continuing."
 
-Templates starting with `_` are partials — they are never generated as standalone commands.
+Templates starting with `_` are partials — they are never generated as standalone commands
+(except `_preamble.md.tpl` which is explicitly generated as `_preamble.md`).
 Self-contained templates (like `help.md.tpl`) include their own Step 1 and are used as-is.
 
 ---
@@ -219,7 +222,9 @@ Written by `/lore:setup`, read by `/lore:status`. Not used by generated project 
 If you changed any file in this repo during a session:
 - Note what changed and why — this CLAUDE.md is the development memory.
 - Update README.md if the user-facing behavior changed.
-- If template files changed: note that existing connected projects need `/lore:setup` again.
+- If template files changed: note that existing connected projects need `/lore:update --all` again.
+- **Always update VERSIONLOG.md** with the changes made.
+- **Always bump the version** in both `.claude-plugin/plugin.json` and `templates/plugin.json.tpl` (patch for fixes, minor for features).
 
 ---
 
@@ -264,13 +269,13 @@ project-root/
 ├── CLAUDE.md                    ← Entry point: role, startup sequence, skill table
 ├── SOURCES.md                   ← What sources exist and where (human-maintained)
 ├── OVERRIDES.md                 ← Human corrections — always win over source data
-├── CHANGELOG.md                 ← Auto-logged after every session with file changes
+├── VERSIONLOG.md                 ← Auto-logged after every session with file changes
 ├── .claude/
 │   ├── lore-design.md           ← Core design principles (signal, pointer, philosophy, tags)
 │   ├── agents/                  ← Pull agents per source (confluence, jira, journal, sharepoint…)
 │   ├── rules/                   ← Always auto-loaded (every session)
 │   │   ├── never-invent.md      ← Core integrity rule + priority hierarchy
-│   │   ├── auto-log.md          ← CHANGELOG entry required after every session
+│   │   ├── auto-log.md          ← VERSIONLOG entry required after every session
 │   │   └── privacy.md           ← Public / Confidential / Private section convention
 │   ├── refs/                    ← Loaded on demand by skills/agents that need them
 │   │   ├── tagging.md           ← Audience + content tag system
@@ -405,10 +410,10 @@ Full dependency map: `.claude/refs/lore-reference.md`
 
 | Changed file | Must also update |
 |---|---|
-| New skill in `.claude/skills/` | `CLAUDE.md` skill table, `refs/lore-reference.md`, `CHANGELOG.md` |
-| New rule in `.claude/rules/` | `CHANGELOG.md` |
-| New agent in `.claude/agents/` | `CLAUDE.md` agents table, `refs/lore-reference.md`, `CHANGELOG.md` |
+| New skill in `.claude/skills/` | `CLAUDE.md` skill table, `refs/lore-reference.md`, `VERSIONLOG.md` |
+| New rule in `.claude/rules/` | `VERSIONLOG.md` |
+| New agent in `.claude/agents/` | `CLAUDE.md` agents table, `refs/lore-reference.md`, `VERSIONLOG.md` |
 | `log-writing.md` changed | `skills/pull/SKILL.md` (log format must stay in sync) |
 | Tag system changed | `log-writing.md`, `lore-design.md`, `skills/pull/SKILL.md` |
 | `knowledge/INDEX.md` | Must reflect all files in `knowledge/` |
-| Any file created/modified/deleted | `CHANGELOG.md` — no exceptions |
+| Any file created/modified/deleted | `VERSIONLOG.md` — no exceptions |

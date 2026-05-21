@@ -23,7 +23,9 @@ If `MISSING`:
 
 ---
 
-## Step 2 — Update the Lore framework
+## Step 2 — Self-update: pull framework and re-install framework commands
+
+This step ensures that the regeneration logic (scripts, templates) is always the latest version — even if THIS command file is outdated.
 
 Run:
 ```bash
@@ -39,7 +41,7 @@ mkdir -p ~/.claude/commands/lore
 cp ~/.lore/.plugin/commands/* ~/.claude/commands/lore/
 ```
 
-- If `FRAMEWORK_UPDATED` and copy succeeded: note "✅ Framework updated."
+- If `FRAMEWORK_UPDATED` and copy succeeded: note "✅ Framework updated (commands re-installed)."
 - If copy failed: warn "⚠ Framework pulled but commands could not be updated. Run the setup script manually."
 
 ---
@@ -78,38 +80,19 @@ git -C ~/.lore/<ALIAS> pull --quiet && echo "PULLED" || echo "PULL_ERROR"
 
 For each alias in TARGETS (that is not SKIP):
 
-Read `config.json` to get `REPO_URL` for this alias. Then run:
+Read `config.json` to get `REPO_URL` for this alias. Then run the regeneration script from the freshly pulled framework:
 
 ```bash
-rm -rf ~/.claude/commands/<ALIAS>
-mkdir -p ~/.claude/commands/<ALIAS>
-BASE=~/.lore/.plugin/templates/_base.md.tpl
-for f in ~/.lore/.plugin/templates/*.md.tpl; do
-  name=$(basename "$f" .md.tpl)
-  # Skip partials (files starting with _)
-  [[ "$name" == _* ]] && continue
-  # If template has no Step 1, prepend the shared base
-  if ! grep -q "^## Step 1" "$f"; then
-    cat "$BASE" "$f" | sed -e "s|{ALIAS}|<ALIAS>|g" \
-        -e "s|{REPO_URL}|<REPO_URL>|g" \
-        -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
-        > ~/.claude/commands/<ALIAS>/${name}.md
-  else
-    sed -e "s|{ALIAS}|<ALIAS>|g" \
-        -e "s|{REPO_URL}|<REPO_URL>|g" \
-        -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
-        "$f" > ~/.claude/commands/<ALIAS>/${name}.md
-  fi
-done
-# Also generate plugin.json
-sed -e "s|{ALIAS}|<ALIAS>|g" \
-    -e "s|{REPO_URL}|<REPO_URL>|g" \
-    -e "s|{REPO_PATH}|~/.lore/<ALIAS>|g" \
-    ~/.lore/.plugin/templates/plugin.json.tpl > ~/.claude/commands/<ALIAS>/plugin.json
-echo "Plugin regenerated: <ALIAS>"
+bash ~/.lore/.plugin/scripts/regenerate.sh <ALIAS> <REPO_URL>
 ```
 
-If the loop fails: show the error and continue with the next alias.
+This script (pulled fresh in Step 2) handles:
+- Cleaning old commands (`rm -rf ~/.claude/commands/<ALIAS>`)
+- Generating all commands from current templates
+- Generating `plugin.json` for version tracking
+
+If the script outputs `REGENERATED:<ALIAS>` → success.
+If it fails: show the error and continue with the next alias.
 
 ---
 

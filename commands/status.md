@@ -103,10 +103,7 @@ Commands available:
   /<alias>:ask [question]
   /<alias>:escalate [ID or description]
   /<alias>:overwrite "[wrong]" "[correct]"
-  /<alias>:todo [text]
-  /<alias>:note [text]
-  /<alias>:recap [focus]
-  /<alias>:feedback [text]
+  /<alias>:jot [text]
   /<alias>:help
 
 Connect a new project:  /lore:setup <repo-url> <alias>

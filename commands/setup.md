@@ -87,37 +87,15 @@ test -d ~/.lore/$ALIAS/.claude/skills && echo "HAS_SKILLS" || echo "NO_SKILLS"
 
 ## Step 5 — Generate the project plugin from templates
 
-Run:
+Run the regeneration script:
 ```bash
-mkdir -p ~/.claude/commands/$ALIAS
-BASE=~/.lore/.plugin/templates/_base.md.tpl
-for f in ~/.lore/.plugin/templates/*.md.tpl; do
-  name=$(basename "$f" .md.tpl)
-  # Skip partials (files starting with _)
-  [[ "$name" == _* ]] && continue
-  # If template has no Step 1, prepend the shared base
-  if ! grep -q "^## Step 1" "$f"; then
-    cat "$BASE" "$f" | sed -e "s|{ALIAS}|$ALIAS|g" \
-        -e "s|{REPO_URL}|$REPO_URL|g" \
-        -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
-        > ~/.claude/commands/$ALIAS/${name}.md
-  else
-    sed -e "s|{ALIAS}|$ALIAS|g" \
-        -e "s|{REPO_URL}|$REPO_URL|g" \
-        -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
-        "$f" > ~/.claude/commands/$ALIAS/${name}.md
-  fi
-  echo "Written: ~/.claude/commands/$ALIAS/${name}.md"
-done
-# Also generate plugin.json
-sed -e "s|{ALIAS}|$ALIAS|g" \
-    -e "s|{REPO_URL}|$REPO_URL|g" \
-    -e "s|{REPO_PATH}|~/.lore/$ALIAS|g" \
-    ~/.lore/.plugin/templates/plugin.json.tpl > ~/.claude/commands/$ALIAS/plugin.json
-echo "Written: ~/.claude/commands/$ALIAS/plugin.json"
+bash ~/.lore/.plugin/scripts/regenerate.sh $ALIAS $REPO_URL
 ```
 
-If the loop fails (e.g. templates directory missing): tell the user to run `/lore:update` to restore the plugin, then retry.
+This generates all commands from templates + `plugin.json` into `~/.claude/commands/$ALIAS/`.
+
+If the script outputs `REGENERATED:$ALIAS` → success.
+If it fails (e.g. templates directory missing): tell the user to run `/lore:update` to restore the plugin, then retry.
 
 ---
 
@@ -169,7 +147,7 @@ Tell the user:
    Repo:      <REPO_URL>
    Local:     ~/.lore/<ALIAS>
    Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
-              /<ALIAS>:todo   /<ALIAS>:note   /<ALIAS>:recap   /<ALIAS>:feedback   /<ALIAS>:help
+              /<ALIAS>:jot   /<ALIAS>:help
 
 To remove this project: /lore:uninstall <ALIAS>
 To remove everything:   /lore:uninstall --all
