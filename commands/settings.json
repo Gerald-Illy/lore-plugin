@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C ~/.lore* pull*)",
+      "Bash(git -C ~/.lore* fetch*)",
+      "Bash(git clone*)",
+      "Bash(git -C ~/.lore* log*)",
+      "Bash(git -C ~/.lore* rev-parse*)",
+      "Bash(bash ~/.lore*)",
+      "Bash(mkdir -p ~/.lore*)",
+      "Bash(mkdir -p ~/.claude*)",
+      "Bash(cp ~/.lore*)",
+      "Bash(rm -rf ~/.lore*)",
+      "Bash(rm -rf ~/.claude/commands/*)",
+      "Bash(cat ~/.lore*)",
+      "Bash(cat ~/.claude*)",
+      "Bash(test -d ~/.lore*)",
+      "Bash(test -f ~/.lore*)",
+      "Bash(* | grep*)",
+      "Bash(date +*)",
+      "Bash(if [ -f * ]; then*)",
+      "Bash(grep -o*)",
+      "Bash(2>/dev/null*)"
+    ]
+  }
+}

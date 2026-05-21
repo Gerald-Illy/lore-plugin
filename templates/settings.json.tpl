@@ -12,7 +12,13 @@
       "Bash(cd {REPO_PATH}*)",
       "Bash(test -d {REPO_PATH}*)",
       "Bash(test -f {REPO_PATH}*)",
-      "Bash(cat {REPO_PATH}*)"
+      "Bash(cat {REPO_PATH}*)",
+      "Bash(MARKER=*)",
+      "Bash(INSTALLED=*)",
+      "Bash(AVAILABLE=*)",
+      "Bash(date +%s*)",
+      "Bash(grep -o*)",
+      "Bash(if [ -f*)"
     ]
   }
 }

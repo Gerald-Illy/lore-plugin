@@ -42,4 +42,10 @@ sed -e "s|{ALIAS}|$ALIAS|g" \
     -e "s|{REPO_PATH}|$REPO_PATH|g" \
     "$TEMPLATE_DIR/plugin.json.tpl" > ~/.claude/commands/$ALIAS/plugin.json
 
+# Generate settings.json
+sed -e "s|{ALIAS}|$ALIAS|g" \
+    -e "s|{REPO_URL}|$REPO_URL|g" \
+    -e "s|{REPO_PATH}|$REPO_PATH|g" \
+    "$TEMPLATE_DIR/settings.json.tpl" > ~/.claude/commands/$ALIAS/settings.json
+
 echo "REGENERATED:$ALIAS"
