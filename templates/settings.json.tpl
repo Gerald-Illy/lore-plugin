@@ -1,24 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C {REPO_PATH} pull*)",
-      "Bash(git -C {REPO_PATH} fetch*)",
-      "Bash(git -C {REPO_PATH} merge*)",
-      "Bash(git -C {REPO_PATH} add*)",
-      "Bash(git -C {REPO_PATH} commit*)",
-      "Bash(git -C {REPO_PATH} push*)",
-      "Bash(git -C {REPO_PATH} rev-parse*)",
-      "Bash(git -C {REPO_PATH} log*)",
-      "Bash(cd {REPO_PATH}*)",
-      "Bash(test -d {REPO_PATH}*)",
-      "Bash(test -f {REPO_PATH}*)",
-      "Bash(cat {REPO_PATH}*)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(ls *)",
+      "Bash(test *)",
+      "Bash(date *)",
+      "Bash(echo *)",
+      "Bash(if *)",
+      "Bash([ *)",
       "Bash(MARKER=*)",
       "Bash(INSTALLED=*)",
       "Bash(AVAILABLE=*)",
-      "Bash(date +%s*)",
-      "Bash(grep -o*)",
-      "Bash(if [ -f*)"
+      "Bash(git -C {REPO_PATH} pull*)",
+      "Bash(git -C {REPO_PATH} fetch*)",
+      "Bash(git -C {REPO_PATH} log*)",
+      "Bash(git -C {REPO_PATH} rev-parse*)",
+      "Bash(git -C {REPO_PATH} add*)",
+      "Bash(git -C {REPO_PATH} commit*)",
+      "Bash(git -C {REPO_PATH} push*)",
+      "Bash(cd {REPO_PATH}*)"
     ]
   }
 }
