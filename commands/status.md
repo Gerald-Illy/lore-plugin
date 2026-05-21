@@ -67,11 +67,10 @@ Extract the `version` field → this is the **repo version** (what's available).
 
 **For each project in `config.json → projects`:**
 
-Run per project:
+Run per project — substitute the literal alias value directly (no shell variables):
 ```bash
-ALIAS="<alias>"
-git -C ~/.lore/$ALIAS log -1 --format="%ar" 2>/dev/null || echo "SYNC_ERROR"
-cat ~/.claude/commands/$ALIAS/plugin.json 2>/dev/null || echo "NOT_INSTALLED"
+git -C ~/.lore/<alias> log -1 --format="%ar" 2>/dev/null || echo "SYNC_ERROR"
+cat ~/.claude/commands/<alias>/plugin.json 2>/dev/null || echo "NOT_INSTALLED"
 ```
 
 Compare the `version` field from `~/.claude/commands/<alias>/plugin.json` (installed) against the framework repo version (available).
