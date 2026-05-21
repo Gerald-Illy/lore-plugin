@@ -42,6 +42,19 @@ cp ~/.lore/.plugin/commands/* ~/.claude/commands/lore/
 - If `FRAMEWORK_UPDATED` and copy succeeded: note "✅ Framework updated."
 - If copy failed: warn "⚠ Framework pulled but commands could not be updated. Run the setup script manually."
 
+### Self-reload after update
+
+After a successful pull **and** copy, immediately re-read the newly installed command file:
+
+```
+Read ~/.claude/commands/lore/update.md
+```
+
+Then continue execution from **Step 3** of that freshly-read file (do **not** re-run Steps 1 and 2).
+Pass the original `$ARGUMENTS` through unchanged.
+
+This ensures that any logic changes introduced in this very update take effect within the same session run.
+
 ---
 
 ## Step 3 — Determine scope from arguments
