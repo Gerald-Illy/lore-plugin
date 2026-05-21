@@ -4,6 +4,16 @@ All versions of the Lore plugin.
 
 ---
 
+## [1.4.1] — 2026-05-21
+
+### Fixed
+- **Session marker false positive:** Markers >4h old (from previous sessions on Windows) no longer trigger a stale warning. Now treated as new session — pulls fresh and writes new marker.
+
+### Removed
+- **`_base.md.tpl`:** Deleted along with build-time concatenation logic in `regenerate.sh`. Runtime preamble makes it unnecessary.
+
+---
+
 ## [1.4.0] — 2026-05-21
 
 ### Added
