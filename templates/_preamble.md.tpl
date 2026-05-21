@@ -15,18 +15,16 @@ If `$ARGUMENTS` is exactly `--help` or `-h`:
 Run:
 ```bash
 MARKER="/tmp/.lore-session-{ALIAS}"
-if [ ! -f "$MARKER" ]; then
-  echo "FIRST_RUN"
-elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
-  echo "SESSION_STALE"
-else
+if [ -f "$MARKER" ] && [ $(( $(date +%s) - $(cat "$MARKER") )) -lt 14400 ]; then
   echo "SESSION_OK"
+else
+  echo "FIRST_RUN"
 fi
 ```
 
 Handle the output:
 
-- **`FIRST_RUN`** — First command this session. Do all of the following:
+- **`FIRST_RUN`** — First command this session (or >4h since last sync). Do all of the following:
   1. Pull the project repo:
      ```bash
      git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "REPO_MISSING"
@@ -43,12 +41,6 @@ Handle the output:
      ```bash
      date +%s > /tmp/.lore-session-{ALIAS}
      ```
-
-- **`SESSION_STALE`** — Session older than 4h. Show once:
-  ```
-  ℹ Session active for >4h. Consider syncing: /lore:sync {ALIAS}
-  ```
-  Then continue (no pull, no block).
 
 - **`SESSION_OK`** — Proceed silently. No pull, no checks.
 

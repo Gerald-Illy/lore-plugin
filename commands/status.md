@@ -21,16 +21,14 @@ If `MISSING`:
 Run:
 ```bash
 MARKER="/tmp/.lore-session-lore"
-if [ ! -f "$MARKER" ]; then
+if [ -f "$MARKER" ] && [ $(( $(date +%s) - $(cat "$MARKER") )) -lt 14400 ]; then
+  echo "SESSION_OK"
+else
   git -C ~/.lore/.plugin fetch --quiet 2>/dev/null
   LOCAL=$(git -C ~/.lore/.plugin rev-parse HEAD 2>/dev/null)
   REMOTE=$(git -C ~/.lore/.plugin rev-parse @{u} 2>/dev/null)
   [ "$LOCAL" != "$REMOTE" ] && echo "PLUGIN_UPDATE_AVAILABLE" || echo "PLUGIN_CURRENT"
   date +%s > "$MARKER"
-elif [ $(( $(date +%s) - $(cat "$MARKER") )) -gt 14400 ]; then
-  echo "SESSION_STALE"
-else
-  echo "SESSION_OK"
 fi
 ```
 
@@ -39,10 +37,6 @@ Handle the output:
 - `PLUGIN_UPDATE_AVAILABLE` → Show once:
   ```
   ℹ Lore plugin update available. Run: /lore:update --all
-  ```
-- `SESSION_STALE` → Show once:
-  ```
-  ℹ Session active for >4h. Consider syncing: /lore:sync
   ```
 - `SESSION_OK` or `PLUGIN_CURRENT` → proceed silently.
 
