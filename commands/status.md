@@ -80,7 +80,7 @@ Display a status table:
 
 ```
 LORE — Connected Projects
-════════════════════════════════════════════════════════
+══════════════════════════════════════════════════════════════════════════════════════════════
 
   Alias      Repo                                  Last sync       Installed
   ─────      ────                                  ─────────       ─────────
@@ -90,7 +90,7 @@ LORE — Connected Projects
   Framework repo:     v1.3.0 (latest)
   Framework commands: ~/.lore/.plugin
 
-════════════════════════════════════════════════════════
+══════════════════════════════════════════════════════════════════════════════════════════════
 
 Commands available:
   /<alias>:briefing [exec|vp|leads]
