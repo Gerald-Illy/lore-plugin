@@ -16,11 +16,19 @@ fi
 Handle the output:
 
 - **`FIRST_RUN`** — First command this session (or >4h since last sync). Do all of the following:
-  1. Pull the project repo:
+  1. Pull the project repo (if a remote is configured):
      ```bash
-     git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "REPO_MISSING"
+     if [ ! -d "$HOME/.lore/{ALIAS}/.git" ]; then
+       echo "REPO_MISSING"
+     elif git -C {REPO_PATH} remote get-url origin >/dev/null 2>&1; then
+       git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "PULL_SKIPPED"
+     else
+       echo "LOCAL_ONLY"
+     fi
      ```
-     If `REPO_MISSING`: tell the user "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`" — **Stop here.**
+     - If `REPO_MISSING`: tell the user "The Lore repo for `{ALIAS}` is not set up. Reconnect with: `/lore:setup {ALIAS}`" — **Stop here.**
+     - If `PULL_SKIPPED`: continue silently.
+     - If `LOCAL_ONLY`: continue silently.
   2. Check for plugin updates:
      ```bash
      INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
@@ -59,6 +67,8 @@ PLUGIN COMMANDS (available from any project)
   /{ALIAS}:escalate [ID or desc]      Draft escalation to responsible owner
   /{ALIAS}:overwrite "[x]" "[y]"      Correct wrong information — override + push
   /{ALIAS}:jot [text]                 Capture anything: notes, todos, feedback, recaps
+  /{ALIAS}:reasoning [question]       Deep multi-file reasoning for complex queries
+  /{ALIAS}:publish [mode] [artifact]  Publish artifact to external platform
   /{ALIAS}:help                       This help page
 
 ═══════════════════════════════════════════════════════════════

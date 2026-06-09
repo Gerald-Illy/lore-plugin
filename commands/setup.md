@@ -1,11 +1,17 @@
-# /lore:setup — Connect a project repo to Lore
+# /lore:setup — Connect or create a Lore project
 # Powered by Lore — agentic intelligence graph and delivery engine
 
 Arguments: `$ARGUMENTS`
-Format: `<repo-url> <alias>`
-Examples:
-- `/lore:setup github:YourOrg/YourProject myproject`
-- `/lore:setup https://github.com/YourOrg/YourProject.git myproject`
+
+**Two modes:**
+
+1. **Connect existing repo:** `/lore:setup <repo-url> <alias>`
+   - `/lore:setup github:YourOrg/YourProject myproject`
+   - `/lore:setup https://github.com/YourOrg/YourProject.git myproject`
+
+2. **Create new project from template:** `/lore:setup new <alias>`
+   - `/lore:setup new myproject`
+   - Creates a fresh local Lore project from the template (no remote repo needed)
 
 ---
 
@@ -27,27 +33,49 @@ If `MISSING`:
 
 ---
 
-## Step 2 — Parse arguments
+## Step 2 — Parse arguments and determine mode
 
-Parse `$ARGUMENTS` into two tokens:
+Parse `$ARGUMENTS`:
 
-- **REPO_URL** (first token):
-  - If it starts with `github:Owner/Repo` → convert to `https://github.com/Owner/Repo.git`
-  - If it starts with `https://` → use as-is
-- **ALIAS** (second token): lowercase short name, no spaces (e.g. `work`, `kb`)
+- **Two tokens:**
+  - **If first token is `new`** → Template mode (new project):
+    - **ALIAS** (second token): lowercase short name, no spaces (e.g. `work`, `kb`)
+    - **REPO_URL** = `local`
+    - **MODE** = `template`
+  - **Otherwise** → Connect mode (existing repo):
+    - **REPO_URL** (first token):
+      - If it starts with `github:Owner/Repo` → convert to `https://github.com/Owner/Repo.git`
+      - If it starts with `https://` → use as-is
+    - **ALIAS** (second token): lowercase short name, no spaces
+    - **MODE** = `connect`
 
-If either token is missing: ask the user to provide it before continuing. **Stop until both are provided.**
+- **One token or no tokens** → Error:
+  Tell the user:
+  ```
+  ❌ Invalid arguments. Use one of:
+  
+     /lore:setup <repo-url> <alias>    (connect existing repo)
+     /lore:setup new <alias>            (create from template)
+  
+  Examples:
+     /lore:setup github:YourOrg/Repo myproject
+     /lore:setup new myproject
+  ```
+  **Stop here.**
 
 Set:
 ```
-REPO_URL  = <parsed>
+REPO_URL  = <parsed or "local">
 ALIAS     = <parsed, lowercase>
 REPO_PATH = ~/.lore/<ALIAS>
+MODE      = "connect" or "template"
 ```
 
 ---
 
-## Step 3 — Clone or update the project repo
+## Step 3 — Clone or create the project
+
+### If MODE = "connect" (existing repo):
 
 Run:
 ```bash
@@ -69,6 +97,33 @@ If this fails, check the error output for clues:
   Tell the user to run `gh auth login` first, then retry `/lore:setup`. **Stop here.**
 - **URL looks wrong:** Show the URL that was attempted and ask the user to verify it. **Stop here.**
 - Any other error: Show the raw git error message so the user can diagnose it. **Stop here.**
+
+### If MODE = "template" (new project):
+
+Run:
+```bash
+if [ -d "$HOME/.lore/$ALIAS/.git" ]; then
+  echo "ALREADY_EXISTS"
+else
+  TMPDIR="/tmp/lore-template-$ALIAS"
+  rm -rf "$TMPDIR"
+  git clone https://github.com/Gerald-Illy/lore-template.git "$TMPDIR" && \
+  mkdir -p ~/.lore/$ALIAS && \
+  cp -r "$TMPDIR"/. ~/.lore/$ALIAS/ && \
+  rm -rf ~/.lore/$ALIAS/.git && \
+  find ~/.lore/$ALIAS -type f -name "*.md" -exec sed -i 's/{PROJECT_NAME}/'"$ALIAS"'/g' {} + && \
+  git -C ~/.lore/$ALIAS init && \
+  git -C ~/.lore/$ALIAS add -A && \
+  git -C ~/.lore/$ALIAS commit -m "Initial Lore project: $ALIAS (from template)" && \
+  rm -rf "$TMPDIR" && \
+  echo "CREATED"
+fi
+```
+
+Handle:
+- **`ALREADY_EXISTS`**: Tell the user: "A project `<ALIAS>` already exists at `~/.lore/<ALIAS>`. To reconnect, provide the repo URL: `/lore:setup <url> <alias>`. To recreate from template, first remove it: `/lore:uninstall <ALIAS>`." **Stop here.**
+- **`CREATED`**: Continue.
+- **Clone failed**: Tell the user to check their network — the Lore template repo could not be reached. **Stop here.**
 
 ---
 
@@ -127,17 +182,22 @@ Add or update the entry for this alias:
     "<ALIAS>": {
       "repo": "<REPO_URL>",
       "path": "~/.lore/<ALIAS>",
-      "installed": "<YYYY-MM-DD today>"
+      "installed": "<YYYY-MM-DD today>",
+      "source": "<MODE>"
     }
   }
 }
 ```
+
+- `"source"` is `"template"` if MODE = template, `"connect"` if MODE = connect.
 
 Write back to `~/.lore/config.json`.
 
 ---
 
 ## Step 8 — Confirm
+
+### If MODE = "connect":
 
 Tell the user:
 
@@ -147,7 +207,7 @@ Tell the user:
    Repo:      <REPO_URL>
    Local:     ~/.lore/<ALIAS>
    Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
-              /<ALIAS>:jot   /<ALIAS>:help
+              /<ALIAS>:jot   /<ALIAS>:reasoning   /<ALIAS>:publish   /<ALIAS>:help
 
 To remove this project: /lore:uninstall <ALIAS>
 To remove everything:   /lore:uninstall --all
@@ -155,4 +215,81 @@ To remove everything:   /lore:uninstall --all
 Try it now: /<ALIAS>:briefing leads
 ```
 
-Suggest exactly one starting command. Default to `/<ALIAS>:briefing leads` unless the repo has a different suggested entry point in its CLAUDE.md.
+Suggest exactly one starting command: `/<ALIAS>:briefing leads` (unless the repo has a different suggested entry point in its CLAUDE.md).
+
+### If MODE = "template":
+
+First, generate a **status report** by checking what's present:
+
+```bash
+cd ~/.lore/$ALIAS
+echo "=== Structure ==="
+echo "CLAUDE.md:       $(test -f CLAUDE.md && echo '✅' || echo '❌')"
+echo "SOURCES.md:      $(test -f SOURCES.md && echo '✅' || echo '❌')"
+echo "OVERRIDES.md:    $(test -f OVERRIDES.md && echo '✅' || echo '❌')"
+echo "knowledge/:      $(test -d knowledge && echo '✅' || echo '❌')"
+echo "log/:            $(test -d log && echo '✅' || echo '❌')"
+echo ".claude/skills/: $(test -d .claude/skills && echo '✅' || echo '❌')"
+echo ".claude/rules/:  $(test -d .claude/rules && echo '✅' || echo '❌')"
+echo ".lore/config.md: $(test -f .lore/config.md && echo '✅' || echo '❌')"
+echo "=== Placeholders remaining ==="
+grep -rl '{PROJECT_NAME}' . --include="*.md" 2>/dev/null | head -5 || echo "None"
+echo "=== Sources configured ==="
+grep -c 'https://' SOURCES.md 2>/dev/null || echo "0"
+```
+
+Then tell the user:
+
+```
+✅ Lore project created: <ALIAS>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📂 Project Status
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Location:   ~/.lore/<ALIAS>
+   Source:     template (local only, no remote)
+   Project:    {PROJECT_NAME} → <ALIAS> (replaced in all .md files)
+
+   Structure:
+   [show results from status check above]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔧 Next Steps (required)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   1. Configure your sources:
+      Open ~/.lore/<ALIAS>/SOURCES.md and add your real URLs
+      (Jira, Confluence, GitHub, SharePoint — whatever applies)
+
+   2. Run your first pull:
+      /<ALIAS>:ask what sources are configured?
+
+   3. When sources are ready:
+      cd ~/.lore/<ALIAS> && /pull onboarding
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Commands installed
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
+   /<ALIAS>:jot   /<ALIAS>:help
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+To connect a remote later:
+   cd ~/.lore/<ALIAS> && git remote add origin <your-repo-url>
+
+To validate setup:
+   cd ~/.lore/<ALIAS> && /lore check
+
+To remove this project: /lore:uninstall <ALIAS>
+```
+
+After showing the report, **run the template's built-in setup check**:
+
+Read `~/.lore/<ALIAS>/.claude/skills/lore/SKILL.md`. If it exists, execute the `/lore check` action from it (the setup checklist that verifies presence, consistency, and quality). Show the results as part of the status output.
+
+If the skill does not exist, skip this step silently.
+
+Suggest exactly one starting command: `/<ALIAS>:help`

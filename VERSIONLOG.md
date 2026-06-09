@@ -4,6 +4,35 @@ All versions of the Lore plugin.
 
 ---
 
+## [2.0.0] — 2026-06-09
+
+### BREAKING CHANGE
+- **Template setup now requires explicit `new` keyword:** `/lore:setup <alias>` alone is no longer valid. Use `/lore:setup new <alias>` to create from template. This makes the intent explicit and prevents accidental template creation when a user forgets the repo URL.
+- **Updated all documentation:** `commands/help.md`, `commands/setup.md`, and `commands/status.md` now reflect the new syntax.
+
+---
+
+## [1.5.0] — 2026-06-09
+
+### Added
+- **Template mode for `/lore:setup`:** Running `/lore:setup <alias>` without a repo URL now creates a fresh local Lore project from the [lore-template](https://github.com/Gerald-Illy/lore-template.git). No GitHub repo needed — the project lives under `~/.lore/<alias>` with a local-only git repo.
+- **Automatic `{PROJECT_NAME}` replacement:** Template placeholders are replaced with the alias name during setup — no manual find/replace needed.
+- **Post-creation status report:** After template setup, a structured report shows project structure, remaining placeholders, and guided next steps (configure SOURCES.md → first pull → first briefing).
+- **Built-in setup check:** If the template includes a `/lore check` skill, it runs automatically after creation to validate the project structure.
+- **`source` field in `config.json`:** Template-created projects are marked with `"source": "template"` to distinguish them from connected repos.
+- **`reasoning.md.tpl`:** New command template for deep multi-agent retrieval with semantic reasoning. Built-in minimal skill provides cross-file synthesis when no project SKILL.md exists.
+- **`publish.md.tpl`:** New command template for publishing artifacts to external platforms. Built-in minimal skill generates shareable markdown artifacts when no project SKILL.md exists.
+- **Built-in minimal skills for all templates:** Every template now includes a fallback skill that works when connecting a non-Lore repo (no SKILL.md required). Templates no longer stop with "skill not available" — they provide basic functionality out of the box.
+
+### Changed
+- **Command count increased from 6 to 8:** Project commands are now: briefing, ask, escalate, overwrite, jot, reasoning, publish, help.
+- **Preamble pull logic robustified:** Step 1 now checks if the repo directory exists and if a remote is configured before attempting `git pull`. Local-only projects (no remote) skip the pull silently instead of showing a false "REPO_MISSING" error.
+- **Setup confirmation split by mode:** Template-created projects get a full status report with next steps instead of a simple confirmation message.
+- **`help.md.tpl` updated:** PLUGIN COMMANDS section now lists all 8 project commands (was 6). Pull logic aligned with new preamble.
+- **All existing templates updated:** Step 3 logic changed from "stop if no SKILL.md" to "use built-in minimal skill if no SKILL.md".
+
+---
+
 ## [1.4.1] — 2026-05-21
 
 ### Fixed

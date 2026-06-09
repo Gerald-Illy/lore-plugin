@@ -25,11 +25,19 @@ fi
 Handle the output:
 
 - **`FIRST_RUN`** — First command this session (or >4h since last sync). Do all of the following:
-  1. Pull the project repo:
+  1. Pull the project repo (if a remote is configured):
      ```bash
-     git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "REPO_MISSING"
+     if [ ! -d "$HOME/.lore/{ALIAS}/.git" ]; then
+       echo "REPO_MISSING"
+     elif git -C {REPO_PATH} remote get-url origin >/dev/null 2>&1; then
+       git -C {REPO_PATH} pull --quiet 2>/dev/null || echo "PULL_SKIPPED"
+     else
+       echo "LOCAL_ONLY"
+     fi
      ```
-     If `REPO_MISSING`: tell the user "The Lore repo for `{ALIAS}` is not found locally. Reconnect with: `/lore:setup {REPO_URL} {ALIAS}`" — **Stop here.**
+     - If `REPO_MISSING`: tell the user "The Lore repo for `{ALIAS}` is not found locally. Reconnect with: `/lore:setup {ALIAS}`" — **Stop here.**
+     - If `PULL_SKIPPED`: continue silently (network issue or upstream changed — not fatal).
+     - If `LOCAL_ONLY`: continue silently (no remote configured — this is a local-only project).
   2. Check for plugin updates:
      ```bash
      INSTALLED=$(grep -o '"version": "[^"]*"' ~/.claude/commands/{ALIAS}/plugin.json 2>/dev/null | grep -o '[0-9][0-9.]*')
@@ -77,7 +85,7 @@ If any file does not exist, skip it silently and continue.
 Only the following commands are installed as global plugin commands:
 
 - `/{ALIAS}:briefing` `/{ALIAS}:ask` `/{ALIAS}:escalate` `/{ALIAS}:overwrite`
-- `/{ALIAS}:jot` `/{ALIAS}:help`
+- `/{ALIAS}:jot` `/{ALIAS}:reasoning` `/{ALIAS}:publish` `/{ALIAS}:help`
 
 **Rule:** When suggesting follow-up commands, ONLY suggest commands from this list.
 If the skill's SKILL.md or the project's CLAUDE.md references other commands (e.g. `/pull`, `/inconsistencies`, `/plan`), these are **repo-only commands** — they are not available as plugin commands. Either:

@@ -13,7 +13,8 @@ LORE — Agentic intelligence graph and delivery engine
   project memory you can query, brief from, and escalate through.
 
 FRAMEWORK COMMANDS
-  /lore:setup <repo-url> <alias>        Connect a project repo
+  /lore:setup <repo-url> <alias>        Connect an existing project repo
+  /lore:setup new <alias>               Create new project from template
   /lore:sync [alias|--all]              Fetch, merge, push project repos
   /lore:status                          Show connected projects + update check
   /lore:update [alias|--all]            Update framework and/or project plugins
@@ -22,8 +23,8 @@ FRAMEWORK COMMANDS
   /lore:help                            Show this help
 
 SETUP EXAMPLES
-  /lore:setup github:YourOrg/YourProject myproject
-  /lore:setup https://github.com/YourOrg/YourProject.git myproject
+  /lore:setup github:YourOrg/YourProject myproject    (connect existing)
+  /lore:setup new myproject                           (create from template)
 
 ONCE A PROJECT IS CONNECTED
   /<alias>:briefing [exec|vp|leads]     Stakeholder-level briefing
@@ -31,6 +32,8 @@ ONCE A PROJECT IS CONNECTED
   /<alias>:escalate [ID or description] Draft an escalation
   /<alias>:overwrite "[wrong]" "[right]" Correct wrong information
   /<alias>:jot [text]                   Capture anything: notes, todos, feedback, recaps
+  /<alias>:reasoning [question]         Deep multi-file reasoning for complex queries
+  /<alias>:publish [mode] [artifact]    Publish artifact to external platform
   /<alias>:help                         Show commands for that project
 
 INSTALLATION

@@ -12,15 +12,12 @@ Read `~/.claude/commands/{ALIAS}/_preamble.md` and execute Steps 0–2.5 before 
 
 Check if `{REPO_PATH}/.claude/skills/jot/SKILL.md` exists.
 
-If it does **not** exist:
-- Tell the user: "The `jot` skill is not available. Pull the latest: `git -C {REPO_PATH} pull`"
-- **Stop here.**
-
-If it exists: read it completely.
+If it does **not** exist: use the **built-in minimal skill** below.
+If it exists: read it completely and use it instead.
 
 ## Step 4 — Execute
 
-Execute the jot skill exactly as defined in SKILL.md.
+Execute the jot skill exactly as defined in SKILL.md (or the built-in below).
 Pass `$ARGUMENTS` through for type detection and content capture.
 
 If no argument was provided: enter interactive recap mode (summarize full session).
@@ -51,6 +48,39 @@ After the jot flow completes (save/copy/discard), suggest 1–2 contextual follo
 - Session done → "See current state? `/{ALIAS}:briefing leads`"
 
 Max 2. Only suggest what is genuinely useful.
+
+---
+
+## Built-in Minimal Skill
+
+Use this when `{REPO_PATH}/.claude/skills/jot/SKILL.md` does not exist.
+
+### Purpose
+Capture notes, todos, feedback, or session recaps into the project repo.
+
+### Type Detection
+Detect from the first word of `$ARGUMENTS`:
+- `todo` → action item
+- `feedback` → quality feedback
+- `recap` → session summary
+- anything else → general note
+
+### Flow
+1. **Determine type** from `$ARGUMENTS` (or ask if empty → recap mode).
+2. **Determine target directory:**
+   - If `{REPO_PATH}/contributions/` exists → use it
+   - Else: create `{REPO_PATH}/notes/`
+3. **Write file:**
+   - Filename: `[type]-[YYYY-MM-DD]-[short-slug].md`
+   - Content: the captured text with a date header
+4. **For recap mode** (no args or `recap`):
+   - Summarize the current session's key points
+   - Write as a dated recap file
+
+### Rules (built-in)
+- Never modify existing files — always create new ones
+- Always include a date header
+- Keep filenames short and descriptive
 
 ## Help
 

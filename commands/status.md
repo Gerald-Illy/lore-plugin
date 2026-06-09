@@ -97,9 +97,12 @@ Commands available:
   /<alias>:escalate [ID or description]
   /<alias>:overwrite "[wrong]" "[correct]"
   /<alias>:jot [text]
+  /<alias>:reasoning [question]
+  /<alias>:publish [mode] [artifact]
   /<alias>:help
 
 Connect a new project:  /lore:setup <repo-url> <alias>
+Create from template:   /lore:setup new <alias>
 Sync projects:          /lore:sync [alias|--all]
 Update framework:       /lore:update [alias|--all]
 Uninstall project:      /lore:uninstall <alias>

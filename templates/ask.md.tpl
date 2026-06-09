@@ -12,15 +12,12 @@ Read `~/.claude/commands/{ALIAS}/_preamble.md` and execute Steps 0–2.5 before 
 
 Check if `{REPO_PATH}/.claude/skills/ask/SKILL.md` exists.
 
-If it does **not** exist:
-- Tell the user: "The `ask` skill is not available. Pull the latest: `git -C {REPO_PATH} pull`"
-- **Stop here.**
-
-If it exists: read it completely.
+If it does **not** exist: use the **built-in minimal skill** below.
+If it exists: read it completely and use it instead.
 
 ## Step 4 — Execute
 
-Execute the ask skill exactly as defined in SKILL.md.
+Execute the ask skill exactly as defined in SKILL.md (or the built-in below).
 The question to answer is: `$ARGUMENTS`
 
 If no argument was provided: ask the user what they want to know.
@@ -44,6 +41,33 @@ After answering, suggest 1–3 contextual follow-up actions based on what was fo
 - Answer is incomplete → "Dig deeper? `/{ALIAS}:ask "[follow-up question]"`"
 
 Max 3. Only suggest what is genuinely useful given the answer.
+
+---
+
+## Built-in Minimal Skill
+
+Use this when `{REPO_PATH}/.claude/skills/ask/SKILL.md` does not exist.
+
+### Purpose
+Answer questions about the project from available local files.
+
+### Flow
+1. **Search for relevant content** across:
+   - `{REPO_PATH}/knowledge/` (all .md files)
+   - `{REPO_PATH}/OVERRIDES.md`
+   - `{REPO_PATH}/log/daily/` (recent entries)
+   - `{REPO_PATH}/CLAUDE.md`
+   - `{REPO_PATH}/README.md`
+   - Any other .md files in the repo root
+2. **Answer the question** from what was found.
+3. **Cite sources** — say which file(s) the answer came from.
+4. **Acknowledge gaps** — if the question can't be fully answered, say what's missing.
+
+### Rules (built-in)
+- Never invent information not found in available files
+- OVERRIDES.md has priority over other files
+- If the answer contradicts across files, surface both with file references
+- If nothing relevant is found: "This is not documented in the available project files."
 
 ## Help
 
