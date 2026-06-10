@@ -171,6 +171,55 @@ This auto-allows git and file operations on the Lore instance so users don't get
 
 ---
 
+## Step 6.5 — Merge global permissions (with user notice)
+
+Lore alias commands (`/<ALIAS>:ask`, `/<ALIAS>:briefing`, etc.) are invoked from any working directory.
+Claude Code's project-level permissions only apply when CWD matches the project directory.
+To avoid permission prompts on every command, lore needs to add entries to `~/.claude/settings.local.json`.
+
+**First: inform the user clearly:**
+
+```
+⚠ Lore Permission Notice
+
+Lore alias commands run from any directory and need global permissions to work without prompts.
+
+What will be written to: ~/.claude/settings.local.json  (NOT settings.json)
+
+Permissions requested (scoped to ~/.lore/ and ~/.claude/commands/ where possible):
+  • git operations on ~/.lore/* only
+  • read/write on ~/.lore/* and ~/.claude/commands/* only
+  • bash scripts from ~/.lore/.plugin/scripts/* only
+  • WebFetch(*) — inherently broad, needed for /pull web sources
+  • date, echo, MARKER=, INSTALLED=, AVAILABLE= — shell utilities (benign)
+
+⚠ Note: WebFetch(*) allows fetching any URL. This is needed for /pull web sources.
+   All other permissions are path-scoped to ~/.lore/.
+
+These permissions affect ALL Claude sessions on this machine, not just Lore.
+The _lore key in settings.local.json identifies these as Lore-managed.
+To remove: /lore:uninstall --all
+
+Proceed? (yes / no)
+```
+
+Wait for the user's response:
+- **yes** → run the merge script
+- **no** → tell the user: "Skipped. You can run this later by re-running `/lore:setup <alias>` or manually. Alias commands will prompt for permissions until this is done."
+- No response / unclear → ask again explicitly
+
+If yes:
+```bash
+bash ~/.lore/.plugin/scripts/merge-global-settings.sh
+```
+
+Handle output:
+- `MERGED` → note: "✅ ~/.claude/settings.local.json updated — alias commands will now run without prompts."
+- `MERGE_FAILED:jq_missing` → tell the user: "jq is not installed. Install it (`winget install jqlang.jq` on Windows, `brew install jq` on Mac) and re-run `/lore:setup <alias>`."
+- Any other error → show raw error, tell user to run the script manually.
+
+---
+
 ## Step 7 — Register the project in Lore config
 
 Read `~/.lore/config.json` (if it does not exist, start with `{}`).

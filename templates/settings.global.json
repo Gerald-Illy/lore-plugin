@@ -1,0 +1,44 @@
+{
+  "_lore": {
+    "managed_by": "lore-plugin",
+    "source": "https://github.com/Gerald-Illy/lore-plugin",
+    "purpose": "Permissions for lore alias commands (/alias:ask, /alias:briefing, etc.) invoked from any working directory. Scoped to ~/.lore/ and ~/.claude/commands/ where possible.",
+    "remove_with": "/lore:uninstall --all"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git -C ~/.lore/* pull*)",
+      "Bash(git -C ~/.lore/* fetch*)",
+      "Bash(git -C ~/.lore/* log*)",
+      "Bash(git -C ~/.lore/* rev-parse*)",
+      "Bash(git -C ~/.lore/* add*)",
+      "Bash(git -C ~/.lore/* commit*)",
+      "Bash(git -C ~/.lore/* push*)",
+      "Bash(git -C ~/.lore/* remote*)",
+      "Bash(git -C ~/.lore/* status*)",
+      "Bash(cat ~/.lore/*)",
+      "Bash(cat ~/.claude/commands/*)",
+      "Bash(ls ~/.lore/*)",
+      "Bash(ls ~/.claude/commands/*)",
+      "Bash(find ~/.lore/*)",
+      "Bash(grep * ~/.lore/*)",
+      "Bash(mkdir -p ~/.lore/*)",
+      "Bash(mkdir -p ~/.claude/commands/*)",
+      "Bash(rm -rf ~/.claude/commands/*)",
+      "Bash(cp ~/.lore/.plugin/commands/* ~/.claude/commands/*)",
+      "Bash(bash ~/.lore/.plugin/scripts/*)",
+      "Bash(sed * ~/.lore/*)",
+      "Bash(test -* ~/.lore/*)",
+      "Bash(test -* ~/.claude/commands/*)",
+      "Bash(test -d /tmp/.lore*)",
+      "Bash(test -f /tmp/.lore*)",
+      "Bash(MARKER=*)",
+      "Bash(INSTALLED=*)",
+      "Bash(AVAILABLE=*)",
+      "Bash(date *)",
+      "Bash(echo *)",
+      "Bash(jq *)",
+      "WebFetch(*)"
+    ]
+  }
+}

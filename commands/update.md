@@ -96,6 +96,41 @@ If it fails: show the error and continue with the next alias.
 
 ---
 
+## Step 5.5 — Re-apply global permissions if settings.global.json changed
+
+After framework pull (Step 2), check if the global permissions template changed:
+
+```bash
+SETTINGS_LOCAL="$HOME/.claude/settings.local.json"
+NEEDS_UPDATE="no"
+
+# Check if settings.local.json exists and has _lore block
+if [ ! -f "$SETTINGS_LOCAL" ]; then
+  NEEDS_UPDATE="missing"
+elif ! jq -e '._lore' "$SETTINGS_LOCAL" >/dev/null 2>&1; then
+  NEEDS_UPDATE="missing"
+fi
+
+echo "NEEDS_UPDATE:$NEEDS_UPDATE"
+```
+
+- If `NEEDS_UPDATE:missing` → the global permissions are not yet installed. Show the same notice as lore:setup Step 6.5 and offer to merge.
+- If `NEEDS_UPDATE:no` → check if the template has new entries not yet in settings.local.json:
+
+```bash
+CURRENT_ALLOW=$(jq -r '.permissions.allow[]' "$SETTINGS_LOCAL" 2>/dev/null | sort)
+TEMPLATE_ALLOW=$(jq -r '.permissions.allow[]' ~/.lore/.plugin/templates/settings.global.json 2>/dev/null | sort)
+NEW_ENTRIES=$(comm -23 <(echo "$TEMPLATE_ALLOW") <(echo "$CURRENT_ALLOW"))
+[ -n "$NEW_ENTRIES" ] && echo "NEW_ENTRIES:$NEW_ENTRIES" || echo "PERMISSIONS_CURRENT"
+```
+
+- If `NEW_ENTRIES:...` → inform the user: "New lore permissions are available:" + list them, then ask: "Add to ~/.claude/settings.local.json? (yes/no)"
+  - yes → run `bash ~/.lore/.plugin/scripts/merge-global-settings.sh`, show `✅ Permissions updated.`
+  - no → note "Skipped. Some alias commands may prompt for permissions."
+- If `PERMISSIONS_CURRENT` → proceed silently.
+
+---
+
 ## Step 6 — Summary
 
 Display a summary of what happened:
