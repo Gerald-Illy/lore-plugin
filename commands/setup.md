@@ -207,7 +207,7 @@ Tell the user:
    Repo:      <REPO_URL>
    Local:     ~/.lore/<ALIAS>
    Commands:  /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
-              /<ALIAS>:jot   /<ALIAS>:reasoning   /<ALIAS>:publish   /<ALIAS>:help
+              /<ALIAS>:jot   /<ALIAS>:reasoning   /<ALIAS>:publish   /<ALIAS>:setup   /<ALIAS>:help
 
 To remove this project: /lore:uninstall <ALIAS>
 To remove everything:   /lore:uninstall --all
@@ -273,7 +273,7 @@ Then tell the user:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    /<ALIAS>:briefing   /<ALIAS>:ask   /<ALIAS>:escalate   /<ALIAS>:overwrite
-   /<ALIAS>:jot   /<ALIAS>:help
+   /<ALIAS>:jot   /<ALIAS>:reasoning   /<ALIAS>:publish   /<ALIAS>:setup   /<ALIAS>:help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

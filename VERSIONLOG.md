@@ -9,10 +9,15 @@ All versions of the Lore plugin.
 ### Added
 - **Template sync mode for `/lore:update`:** New syntax `/lore:update <alias> from lore-template` compares a project instance with the lore-template repo and shows what's new/changed. User can selectively apply updates. Changes are made on a branch for safe rollback and PR creation.
 - **Template repo location:** `~/.lore/.template/` — cloned once, pulled on each sync invocation.
+- **`setup.md.tpl`:** New command template for `/{ALIAS}:setup` — interactive source configuration wizard. Guides through adding, editing, validating sources without manual SOURCES.md editing.
 
 ### Changed
 - **`commands/update.md`:** Extended with Steps 7–13 (Template Sync Mode). Argument parsing in Step 3 detects `from lore-template` and routes to the new flow.
 - **`commands/help.md`:** Documents the new `from lore-template` syntax.
+- **`templates/_preamble.md.tpl`:** Added `/{ALIAS}:setup` to available commands list.
+- **`templates/help.md.tpl`:** Added `/{ALIAS}:setup` to PLUGIN COMMANDS section.
+- **`commands/status.md`:** Added `/<alias>:setup` to commands list.
+- **`commands/setup.md`:** Added `/<ALIAS>:setup` to confirmation and template-mode output.
 
 ---
 

@@ -99,6 +99,7 @@ Commands available:
   /<alias>:jot [text]
   /<alias>:reasoning [question]
   /<alias>:publish [mode] [artifact]
+  /<alias>:setup [action]
   /<alias>:help
 
 Connect a new project:  /lore:setup <repo-url> <alias>

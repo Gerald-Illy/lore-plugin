@@ -69,6 +69,7 @@ PLUGIN COMMANDS (available from any project)
   /{ALIAS}:jot [text]                 Capture anything: notes, todos, feedback, recaps
   /{ALIAS}:reasoning [question]       Deep multi-file reasoning for complex queries
   /{ALIAS}:publish [mode] [artifact]  Publish artifact to external platform
+  /{ALIAS}:setup [action]             Configure sources and project settings
   /{ALIAS}:help                       This help page
 
 ═══════════════════════════════════════════════════════════════
