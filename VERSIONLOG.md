@@ -4,6 +4,18 @@ All versions of the Lore plugin.
 
 ---
 
+## [2.1.0] — 2026-06-10
+
+### Added
+- **Template sync mode for `/lore:update`:** New syntax `/lore:update <alias> from lore-template` compares a project instance with the lore-template repo and shows what's new/changed. User can selectively apply updates. Changes are made on a branch for safe rollback and PR creation.
+- **Template repo location:** `~/.lore/.template/` — cloned once, pulled on each sync invocation.
+
+### Changed
+- **`commands/update.md`:** Extended with Steps 7–13 (Template Sync Mode). Argument parsing in Step 3 detects `from lore-template` and routes to the new flow.
+- **`commands/help.md`:** Documents the new `from lore-template` syntax.
+
+---
+
 ## [2.0.0] — 2026-06-09
 
 ### BREAKING CHANGE

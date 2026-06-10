@@ -18,6 +18,7 @@ FRAMEWORK COMMANDS
   /lore:sync [alias|--all]              Fetch, merge, push project repos
   /lore:status                          Show connected projects + update check
   /lore:update [alias|--all]            Update framework and/or project plugins
+  /lore:update <alias> from lore-template   Sync project with template (selective)
   /lore:uninstall <alias>               Remove a connected project
   /lore:uninstall --all                 Full uninstall (projects + framework)
   /lore:help                            Show this help
