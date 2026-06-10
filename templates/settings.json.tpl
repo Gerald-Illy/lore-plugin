@@ -37,7 +37,19 @@
       "Bash(MARKER=*)",
       "Bash(INSTALLED=*)",
       "Bash(AVAILABLE=*)",
-      "Bash(date +%s*)"
+      "Bash(date +%s*)",
+      "Bash(mkdir -p *)",
+      "Bash(rm -rf *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(touch *)",
+      "Bash(bash ~/.lore/.plugin/scripts/*)",
+      "Bash(git -C ~/.lore/* pull*)",
+      "Bash(git -C ~/.lore/* fetch*)",
+      "Bash(git -C ~/.lore/* log*)",
+      "Bash(git -C ~/.lore/* add*)",
+      "Bash(git -C ~/.lore/* commit*)",
+      "Bash(git -C ~/.lore/* push*)"
     ]
   }
 }
