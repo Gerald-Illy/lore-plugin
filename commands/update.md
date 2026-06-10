@@ -125,7 +125,9 @@ NEW_ENTRIES=$(comm -23 <(echo "$TEMPLATE_ALLOW") <(echo "$CURRENT_ALLOW"))
 ```
 
 - If `NEW_ENTRIES:...` → inform the user: "New lore permissions are available:" + list them, then ask: "Add to ~/.claude/settings.local.json? (yes/no)"
-  - yes → run `bash ~/.lore/.plugin/scripts/merge-global-settings.sh`, show `✅ Permissions updated.`
+  - yes → run `bash ~/.lore/.plugin/scripts/merge-global-settings.sh`
+    - `MERGED` → show `✅ Permissions updated.`
+    - `MERGE_FAILED:jq_missing` or `MERGE_FAILED:no_merge_tool` → tell user: "Install jq first (`winget install jqlang.jq` on Windows, `brew install jq` on Mac), then re-run `/lore:update`."
   - no → note "Skipped. Some alias commands may prompt for permissions."
 - If `PERMISSIONS_CURRENT` → proceed silently.
 

@@ -216,6 +216,7 @@ bash ~/.lore/.plugin/scripts/merge-global-settings.sh
 Handle output:
 - `MERGED` → note: "✅ ~/.claude/settings.local.json updated — alias commands will now run without prompts."
 - `MERGE_FAILED:jq_missing` → tell the user: "jq is not installed. Install it (`winget install jqlang.jq` on Windows, `brew install jq` on Mac) and re-run `/lore:setup <alias>`."
+- `MERGE_FAILED:no_merge_tool` → tell the user: "Neither jq nor PowerShell was found. Install jq (`winget install jqlang.jq` on Windows, `brew install jq` on Mac) and re-run `/lore:setup <alias>`."
 - Any other error → show raw error, tell user to run the script manually.
 
 ---
