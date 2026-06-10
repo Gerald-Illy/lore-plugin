@@ -28,7 +28,40 @@ if command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-# ── PowerShell fallback (Windows / no jq) ────────────────────────────────────
+# ── Python3 fallback (Mac / Linux without jq) ─────────────────────────────────
+if command -v python3 >/dev/null 2>&1; then
+  python3 - "$SETTINGS_LOCAL" "$LORE_PERMS" <<'PYEOF'
+import json, sys, os
+
+settings_path = sys.argv[1]
+perms_path    = sys.argv[2]
+
+current = {}
+if os.path.exists(settings_path):
+    with open(settings_path) as f:
+        current = json.load(f)
+
+with open(perms_path) as f:
+    template = json.load(f)
+
+existing_allow = current.get("permissions", {}).get("allow", [])
+lore_allow     = template["permissions"]["allow"]
+merged_allow   = sorted(set(existing_allow + lore_allow))
+
+if "permissions" not in current:
+    current["permissions"] = {}
+current["permissions"]["allow"] = merged_allow
+current["_lore"] = template["_lore"]
+
+with open(settings_path, "w") as f:
+    json.dump(current, f, indent=2)
+
+print("MERGED")
+PYEOF
+  exit 0
+fi
+
+# ── PowerShell fallback (Windows without jq) ─────────────────────────────────
 PS=$(command -v pwsh 2>/dev/null || command -v powershell.exe 2>/dev/null)
 if [ -n "$PS" ]; then
   "$PS" -NonInteractive -NoProfile -Command "

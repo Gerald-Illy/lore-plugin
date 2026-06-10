@@ -111,7 +111,7 @@ else
   mkdir -p ~/.lore/$ALIAS && \
   cp -r "$TMPDIR"/. ~/.lore/$ALIAS/ && \
   rm -rf ~/.lore/$ALIAS/.git && \
-  find ~/.lore/$ALIAS -type f -name "*.md" -exec sed -i 's/{PROJECT_NAME}/'"$ALIAS"'/g' {} + && \
+  find ~/.lore/$ALIAS -type f -name "*.md" -exec perl -pi -e "s/\{PROJECT_NAME\}/$ALIAS/g" {} + && \
   git -C ~/.lore/$ALIAS init && \
   git -C ~/.lore/$ALIAS add -A && \
   git -C ~/.lore/$ALIAS commit -m "Initial Lore project: $ALIAS (from template)" && \
