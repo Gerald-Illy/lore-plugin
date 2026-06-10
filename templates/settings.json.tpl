@@ -49,7 +49,8 @@
       "Bash(git -C ~/.lore/* log*)",
       "Bash(git -C ~/.lore/* add*)",
       "Bash(git -C ~/.lore/* commit*)",
-      "Bash(git -C ~/.lore/* push*)"
+      "Bash(git -C ~/.lore/* push*)",
+      "WebFetch(*)"
     ]
   }
 }
