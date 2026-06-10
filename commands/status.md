@@ -99,6 +99,7 @@ Commands available:
   /<alias>:jot [text]
   /<alias>:reasoning [question]
   /<alias>:publish [mode] [artifact]
+  /<alias>:pull [scope]
   /<alias>:setup [action]
   /<alias>:help
 

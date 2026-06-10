@@ -85,7 +85,7 @@ If any file does not exist, skip it silently and continue.
 Only the following commands are installed as global plugin commands:
 
 - `/{ALIAS}:briefing` `/{ALIAS}:ask` `/{ALIAS}:escalate` `/{ALIAS}:overwrite`
-- `/{ALIAS}:jot` `/{ALIAS}:reasoning` `/{ALIAS}:publish` `/{ALIAS}:setup` `/{ALIAS}:help`
+- `/{ALIAS}:jot` `/{ALIAS}:reasoning` `/{ALIAS}:publish` `/{ALIAS}:pull` `/{ALIAS}:setup` `/{ALIAS}:help`
 
 **Rule:** When suggesting follow-up commands, ONLY suggest commands from this list.
 If the skill's SKILL.md or the project's CLAUDE.md references other commands (e.g. `/pull`, `/inconsistencies`, `/plan`), these are **repo-only commands** — they are not available as plugin commands. Either:

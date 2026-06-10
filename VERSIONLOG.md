@@ -7,7 +7,8 @@ All versions of the Lore plugin.
 ## [2.1.0] — 2026-06-10
 
 ### Added
-- **`setup.md.tpl`:** New command template for `/{ALIAS}:setup` — interactive source configuration and template sync. Includes `sync-from-template` action that compares the project with `~/.lore/.template/`, shows new/changed framework files, and lets the user selectively adopt updates on a branch.
+- **`setup.md.tpl`:** New command template for `/{ALIAS}:setup` — interactive source configuration and template sync. Includes `update` action that compares the project with `~/.lore/.template/`, shows new/changed framework files, and lets the user selectively adopt updates on a branch.
+- **`pull.md.tpl`:** New command template for `/{ALIAS}:pull` — pull fresh data from configured sources into Lore. Supports scoped pulls (jira, confluence, github, web, onboarding).
 
 ### Changed
 - **`templates/_preamble.md.tpl`:** Added `/{ALIAS}:setup` to available commands list.
